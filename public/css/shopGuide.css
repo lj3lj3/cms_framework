@@ -1,0 +1,41 @@
+.guideBoxBg{width:100%;height:100%;background:#000;position:fixed !important;/*ie7 ff*/position:absolute;top:0;left:0;filter:alpha(opacity=50);opacity:0.5; z-index:9990;}
+.guidePanel{width:100%;height:100%;position:absolute;top:0;left:0; z-index:10000; overflow-y: scroll;}
+.guidePanel .bg,.click_close_tips .bg{background: url(../images/shop_guide_sprite.png) no-repeat;}
+.guideBox{width: 740px; margin: auto; margin-top: 100px; background: #FFF; z-index:2; border: 1px transparent solid; -moz-border-radius: 10px; -webkit-border-radius: 10px; border-radius: 10px;
+ position: relative; behavior: url(iecss3.htc)}
+.guideBox .guideBox_title{height: 65px; line-height: 65px; border: 1px transparent solid; border-top-left-radius: 10px; border-top-right-radius: 10px; margin-bottom: 24px; background: #F4F4F4; border-bottom: 1px #EAEAEA solid; padding: 0 26px; text-align: left; font-size: 24px;}
+.guideBox .guideBox_start_title{height: 102px; line-height: 102px; border: 1px transparent solid; border-top-left-radius: 10px; border-top-right-radius: 10px; margin-bottom: 24px; background: #F4F4F4; color: #424242; border-bottom: 1px #EAEAEA solid; padding: 0 26px; text-align: center; font-size: 36px;}
+.guideBox .close{width: 16px; height: 16px; display: block; background-position: -9px -135px; position: absolute; top: 10px; right: 10px;}
+.guideBox .guideBox_sub_title{color: #8E8E8E; text-align: center; font-size: 18px; padding-bottom: 20px;}
+.guideBox ul.stepbox{overflow: hidden; padding:0 55px 30px 55px;}
+.guideBox ul.stepbox li{width: 98px; height: 98px; border: 2px #F4F4F4 solid; background: #F4F4F4; border-radius: 5px; float: left; margin-left: 20px; position: relative;}
+.guideBox ul.stepbox li a{width: 98px; height: 98px; color: #B3B3B3; display: block; text-align: center; font-size: 14px; position: absolute; left: 0px; top: 0px;}
+.guideBox ul.stepbox li a span{width: 42px; height: 42px; display: block; overflow: hidden; margin: auto; margin-top: 25px; margin-bottom: 6px; background: url(../images/shop_guide_sprite.png) no-repeat;}
+.guideBox ul.stepbox li a.step1 span{background-position: -6px -6px;}
+.guideBox ul.stepbox li a.step2 span{background-position: -63px -8px;}
+.guideBox ul.stepbox li a.step3 span{background-position: -118px -6px;}
+.guideBox ul.stepbox li a.step4 span{background-position: -184px -6px;}
+.guideBox ul.stepbox li a.step5 span{background-position: -251px -3px;}
+.guideBox ul.stepbox li.cur{border: 2px #DD5450 solid; background: #DD5450;}
+.guideBox ul.stepbox li.cur a{color: #FFF;}
+.guideBox ul.stepbox li.cur a.step1 span{background-position: -6px -73px;}
+.guideBox ul.stepbox li.cur a.step2 span{background-position: -63px -75px;}
+.guideBox ul.stepbox li.cur a.step3 span{background-position: -118px -73px;}
+.guideBox ul.stepbox li.cur a.step4 span{background-position: -184px -73px;}
+.guideBox ul.stepbox li.cur a.step5 span{background-position: -251px -70px;}
+.guideBox .start_btn{ height:50px; width: 80px; line-height: 50px; font-weight: bold; font-size: 18px; font-family: Arial; padding: 0 30px; border: 1px #4598BC solid; border-radius:5px; -webkit-border-radius: 3px; background:#6BAAE1; color: #FFF; display:inline-block;  display:block; margin: auto; margin-top:8px;}
+.guideBox .select_no_show{text-align: center;}
+.guideBox .select_no_show input{vertical-align: middle; margin-right: 3px; font-size: 12px; color: #363636; border: 1px #363636 solid;}
+.guideBox .prev_step{width: auto; height: 50px; position: absolute; left: 0px; bottom: -50px; padding-left: 10px; padding-right: 140px; background: url(../images/shop_guide_sprite.png) right -268px no-repeat; font-size: 16px; color: #FFF; line-height: 30px;}
+.guideBox .next_step{width: 175px; height: 45px; display: block; position: absolute; bottom: 0px; right: -175px; background-position: 0px -166px; padding-top: 70px; text-align: right; font-size: 16px; color: #FFF;}
+.guideBox .details{color: #4E4E4E; line-height: 28px; font-size: 13px; padding: 12px 40px; border-top: 1px #EAEAEA solid;}
+.guideBox .details a{color:#69C75C; text-decoration: underline;}
+.guideBox .details a:hover{text-decoration: none;}
+.guideBox .details h3{font-size: 16px; color: #DD5450; line-height: 28px;}
+.guideBox .details h4{color: #333;}
+
+.click_close_tips_bg{width:100%;height:100%;position:absolute;top:0;left:0; z-index:20000; display: none; background: #000; filter:alpha(opacity=50);opacity:0.5;}
+.click_close_tips{display: none; left: 50%; margin-left: -220px; margin-top: 100px; border: 1px transparent solid; -moz-border-radius: 8px; -webkit-border-radius: 8px; border-radius: 8px; position: absolute; z-index:30000; background: #FFF; padding: 30px 10px 0 10px; width: 418px;}
+.click_close_tips_box{width: 418px; position: relative;}
+.click_close_tips_box .close{width: 16px; height: 16px; display: block; background-position: -9px -135px; position: absolute; top: -20px; right: 0px;}
+

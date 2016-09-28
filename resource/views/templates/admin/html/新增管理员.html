@@ -1,0 +1,80 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>新增管理员</title>
+<link href="../css/system.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+        <div class="pd-20">
+  <form id="form-member-add" class="form form-horizontal" method="post" action="">
+    <div class="row">
+      <label class="form-label col-3"><span class="c-red">*</span>用户名：</label>
+      <div class="col-5">
+        <input type="text" nullmsg="用户名不能为空" datatype="*2-16" name="member-name" id="member-name" placeholder="" value="" class="input-text">
+      </div>
+      
+    </div>
+    <div class="row">
+      <label class="form-label col-3"><span class="c-red">*</span>性别：</label>
+      <div class="col-5">
+            <div class="radio-box">
+                  <input type="radio" name="sex" id="sex-1">
+                  <label class="">男</label>
+            </div>
+            <div class="radio-box">
+                  <input type="radio" name="sex" id="sex-2">
+                  <label>女</label>
+            </div>
+            <div class="radio-box">
+                  <input type="radio" name="sex" id="sex-3">
+                  <label>保密</label>
+            </div>
+      </div>
+      
+    </div>
+    <div class="row">
+		  <label class="form-label col-3"><span class="c-red">*</span>密码：</label>
+		  <div class="col-5">
+				<input type="text"  name="member-tel" id="member-tel"  placeholder="密码"  value="" class="input-text">
+		  </div>
+      
+    </div>
+    <div class="row">
+		  <label class="form-label col-3"><span class="c-red">*</span>确认密码：</label>
+		  <div class="formControls col-5">
+				<input type="text" id="email" name="email" placeholder="确认密码" class="input-text">
+		  </div>
+      
+    </div>
+    
+    <div class="row">
+      <label class="form-label col-3">管理员权限：</label>
+      <div class="col-5"> 
+           <span class="select-box">
+                <select nullmsg="请选择所在城市！" datatype="*" name="demo1" size="1" class="select">
+                      <option selected="" value="">请选择管理员权限</option>
+                      <option value="1">超级管理员</option>
+                      <option value="2">普通管理员</option>
+                      <option value="3">栏目编辑</option>
+                </select>
+            </span> 
+        </div>
+      
+    </div>
+    <div class="row">
+      <label class="form-label col-3">备注：</label>
+      <div class="col-5">
+        <textarea onkeyup="textarealength(this,100)" nullmsg="备注不能为空！" dragonfly="true" datatype="*10-100" placeholder="说点什么...最少输入10个字符" class="textarea" rows="" cols="" name=""></textarea>
+      </div>
+      
+    </div>
+    <div class="row">
+      <div class="col-9 col-offset-3">
+        <input type="submit" value="&nbsp;&nbsp;提交&nbsp;&nbsp;" class="btn btn-primary radius">
+      </div>
+    </div>
+  </form>
+</div>
+</body>
+</html>
