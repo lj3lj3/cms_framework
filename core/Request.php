@@ -6,7 +6,7 @@
  * Time: 11:56 PM
  */
 
-namespace Core;
+//namespace Core;
 
 class Request
 {
@@ -15,10 +15,10 @@ class Request
     protected $method;
     protected $post;
 
-    public static function newInstance()
+    /*public static function newInstance()
     {
-        return new static();
-    }
+        return new self();
+    }*/
 
     public function __construct()
     {

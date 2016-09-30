@@ -1,5 +1,5 @@
 <?php
-namespace Core\Controller;
+//namespace Core\Controller;
 /**
  * Created by PhpStorm.
  * User: Daylemon
@@ -14,7 +14,7 @@ class BaseController
 
     public function __construct()
     {
-        $this->tplDir = dirname(dirname(__DIR__)) . '/resource/views/templates/';
+        $this->tplDir = dirname(dirname(dirname(__FILE__))) . '/resource/views/templates/';
         $this->smarty = $GLOBALS['smarty'];
     }
 }

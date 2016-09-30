@@ -1,5 +1,5 @@
 <?php
-namespace Core\Model;
+//namespace Core\Model;
 
 /**
  * Created by PhpStorm.
@@ -31,7 +31,7 @@ class BaseModel
 
     public static function newInstance()
     {
-        return new static();
+        return new self();
     }
 
     public function __construct()

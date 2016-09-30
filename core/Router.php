@@ -6,20 +6,20 @@
  * Date: 9/21/2016
  * Time: 11:33 PM
  */
-namespace Core;
+//namespace Core;
 
 class Router
 {
     protected $routes = array();
 
-    public static function load($file)
-    {
-        $router = new static;
-
-        require $file;
-
-        return $router;
-    }
+//    public static function load($file)
+//    {
+//        $router = new static;
+//
+//        require $file;
+//
+//        return $router;
+//    }
 
     public function define($routes)
     {
@@ -55,7 +55,8 @@ class Router
         $className = $uriPis[count($uriPis)-1] = ucfirst($uriPis[count($uriPis)-1]);
         // use namespace
         $path = implode('\\', $uriPis);
-        $realClassName =  "\\Core\\Controller\\{$path}Controller";
+//        $realClassName =  "\\Core\\Controller\\{$path}Controller";
+        $realClassName =  "{$className}Controller";
         $controllerUri = 'Controller/' . implode('/', $uriPis) . 'Controller.php';
         // last parameter is function
 //        $functionName = $uriPis[count($uriPis)-1];

@@ -1,7 +1,7 @@
 <?php
-namespace Core\Middleware;
+//namespace Core\Middleware;
 
-use Core\Request;
+//use Core\Request;
 /**
  * Created by PhpStorm.
  * User: Daylemon

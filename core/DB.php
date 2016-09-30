@@ -1,6 +1,6 @@
 <?php
-namespace Core;
-use Core\Model\BaseModel;
+//namespace Core;
+//use Core\Model\BaseModel;
 
 /**
  * Created by PhpStorm.
@@ -23,7 +23,7 @@ class DB
     {
         if (array_key_exists($dbConfigName, $GLOBALS['config']['database'])) {
             $dbConfigs = $GLOBALS['config']['database'][$dbConfigName];
-            $this->pdo = new \PDO("{$dbConfigs['db']}:host={$dbConfigs['host']};charset={$dbConfigs['charset']};
+            $this->pdo = new PDO("{$dbConfigs['db']}:host={$dbConfigs['host']};charset={$dbConfigs['charset']};
             dbname={$dbConfigs['dbname']}", $dbConfigs['name'], $dbConfigs['password']);
         } else {
             echo "not fonund this db config: $dbConfigName";
@@ -47,7 +47,12 @@ class DB
      */
     public function prepare($sql, $keyAndValues = null, $whereKeyAndValues = null)
     {
-        $this->pdoStatement = $this->pdo->prepare($sql);
+        try {
+            $this->pdoStatement = $this->pdo->prepare($sql);
+        } catch (PDOException $e) {
+            echo $e->getMessage();
+        }
+
 
         // Set fetch mode
         if ($this->fetchMode != null) {
