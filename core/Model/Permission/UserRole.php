@@ -16,7 +16,7 @@ class UserRole extends BaseModel
     const C_CREATE_DATE = "create_date";
 
     // For PDO
-    public $id;
+//    public $id;
     public $user_id;
     public $role_id;
     public $create_date;
@@ -26,5 +26,10 @@ class UserRole extends BaseModel
         parent::__construct();
         $this->tableName = UserRole::TABLE_NAME;
         $this->setFetchMode($this->fetchMode, get_class($this));
+    }
+
+    public function save()
+    {
+        // TODO: Implement save() method.
     }
 }

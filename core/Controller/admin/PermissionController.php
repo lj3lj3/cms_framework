@@ -19,9 +19,13 @@ class PermissionController extends BaseController
     public function getAllUserPermission()
     {
         $user = new User(1);
-        var_dump($user->allWithRoles());
+//        var_dump($user->allWithRoles());
         echo '--------------------------';
-        $user = new User(1);
-        var_dump($user->allWithPermission());
+//        $user = new User(1);
+        $pers = $user->allWithPermission();
+        foreach ($pers as $per) {
+            echo $per->name;
+        }
+
     }
 }

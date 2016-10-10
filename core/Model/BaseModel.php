@@ -14,6 +14,8 @@ abstract class BaseModel
     const C_ID = 'id';
     const TABLE_PREFIX = 'tableprefix';
 
+    public $id;
+
     // 默认数据库配置项
     protected $dbConfig = 'mysql';
     // 数据表的前缀 从配置文件中读取
@@ -54,6 +56,7 @@ abstract class BaseModel
     public function setFetchMode($fetchMode, $fetchClass)
     {
         $this->db->setFetchMode($fetchMode, $fetchClass);
+        return $this;
     }
 
     public function getTableName()
@@ -65,6 +68,8 @@ abstract class BaseModel
     {
         return $this->db->queryAll($this);
     }
+
+    public abstract function save();
 
     public function doInsert()
     {
@@ -105,16 +110,27 @@ abstract class BaseModel
         return $this;
     }
 
-    public function on($models, $columns)
+    public function on($modelLeft, $columnLeft, $modelRight, $columnRight)
     {
-        $this->db->on($models, $columns);
+        $this->db->on($modelLeft, $columnLeft, $modelRight, $columnRight);
         return $this;
     }
 
+    /**
+     * 读取whereKeyAndValue作为限定参数
+     * @param array $operations
+     * @return $this
+     */
     public function where($operations = array('='))
     {
         $this->db->where($this->whereKeyAndValue, $operations);
         return $this;
+    }
+
+    // TODO: 传入Model使用model中的限制条件 或者使用自身作为限制条件
+    public function whereModel()
+    {
+
     }
 
     public function orderBy($orderColumns, $descOrAsc)
@@ -127,5 +143,32 @@ abstract class BaseModel
     {
         $this->db->limit($count, $offset);
         return $this;
+    }
+
+    public function prepare($sql = null)
+    {
+        $this->db->prepare($sql, $this->keyAndValue, $this->whereKeyAndValue);
+        return $this;
+    }
+
+    public function execute()
+    {
+        $this->db->execute($this->keyAndValue);
+        return $this;
+    }
+
+    public function fetchAll()
+    {
+        return $this->db->fetchAll();
+    }
+
+    public function fetch()
+    {
+        return $this->db->fetch();
+    }
+
+    public function justRun()
+    {
+        return $this->db->prepare()->execute()->fetchAll();
     }
 }

@@ -134,4 +134,9 @@ class Article extends BaseModel
     {
         return $this->author;
     }
+
+    public function save()
+    {
+        // TODO: Implement save() method.
+    }
 }

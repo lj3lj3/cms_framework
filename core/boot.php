@@ -8,8 +8,12 @@
 
 //namespace Core;
 
-require dirname(dirname(__FILE__)). '/config/global.php';
+require_once dirname(dirname(__FILE__)) . '/config/global.php';
+require_once dirname(__FILE__) . '/Log/Log.php';
+require_once 'Exception.php';
 require_once dirname(dirname(__FILE__)) . '/vendor/smarty/libs/Smarty.class.php';
+// Log启动
+Log::boot(new DBLogHandler());
 
 // For now
 define('ERROR_REPORT', 3);
@@ -22,8 +26,8 @@ if(ERROR_REPORT==1) {
 } else {
     error_reporting(E_ALL);
 }
-//set_error_handler('log_error');
-//set_exception_handler('log_exception');
+set_error_handler('error_handler');
+set_exception_handler('exception_handler');
 
 
 // Load plugins

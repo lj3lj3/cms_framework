@@ -1,11 +1,13 @@
 <?php
-namespace Core\Controller\Temp;
+//namespace Core\Controller\Temp;
 
 //require dirname(dirname(dirname(__FILE__))) . "/Model/BaseModel.php";
-require dirname(dirname(dirname(__FILE__))) . "/DB.php";
-require dirname(dirname(__FILE__)) . '/BaseController.php';
-use Core\Controller\BaseController;
-use Core\DB;
+require_once dirname(dirname(dirname(__FILE__))) . "/DB.php";
+require_once dirname(dirname(__FILE__)) . '/BaseController.php';
+require_once dirname(dirname(dirname(__FILE__))) . '/Log/Log.php';
+require_once dirname(dirname(dirname(__FILE__))) . '/Model/LogModel.php';
+//use Core\Controller\BaseController;
+//use Core\DB;
 
 /**
  * Created by PhpStorm.
@@ -84,5 +86,22 @@ class TempController extends BaseController
     public function bootstrap()
     {
         $this->smarty->display($this->tplDir . "temp/bootstrap.php");
+    }
+
+    public function log2File()
+    {
+        echo "begin";
+        Log::info("[DAYL]", '这是一条记录');
+        echo "end";
+    }
+
+    public function log2db()
+    {
+        echo "begin";
+        $model = new LogModel();
+        $model->user_id = 1;
+        $model->action = "用于执行了一个操作";
+        Log::logModel($model);
+        echo "end";
     }
 }

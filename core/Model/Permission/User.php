@@ -23,7 +23,7 @@ class User extends BaseModel
     const C_CREATE_DATE = "create_date";
 
     // For PDO
-    public $id;
+//    public $id;
     public $name;
     public $password;
     public $display_name;
@@ -33,7 +33,6 @@ class User extends BaseModel
 
     protected $roles = array();
     protected $permissions = array();
-
 
     public function __construct($id = 0)
     {
@@ -60,7 +59,7 @@ class User extends BaseModel
     {
         $per = new Permission();
 //        $selectColumns = array($per->getTableName().'.'.Permission::C_NAME);
-        $selectColumns = array('*');
+        $selectColumns = array($per->getTableName().'.'.Permission::C_NAME);
 
         $userRole = new UserRole();
 //        $userUserRole = array($this, $userRole);
@@ -78,17 +77,16 @@ class User extends BaseModel
 //        $rolePerPer = array($rolePer, $permission);
 //        $rolePerPerCol = array(RolePermission::C_PERMISSION_ID, Permission::C_ID);
 
-        $idkey = $this->getTableName().'.'.User::C_ID;
         $this->whereKeyAndValue = array(
             $this->getTableName().'.'.User::C_ID => $this->id
         );
 
-        return $this->db->queryBuilder($selectColumns, $this)
+        return $this->setFetchMode($this->fetchMode, get_class($permission))->queryBuilder($selectColumns)
             ->join($userRole)->on($this, User::C_ID, $userRole, UserRole::C_USER_ID)
             ->join($role)->on($userRole, UserRole::C_ROLE_ID, $role, Role::C_ID)
             ->join($rolePer)->on($role, Role::C_ID, $rolePer, RolePermission::C_ROLE_ID)
             ->join($permission)->on($rolePer, RolePermission::C_PERMISSION_ID, $permission, Permission::C_ID)
-            ->where($this->whereKeyAndValue)->prepare()->execute()->fetchAll();
+            ->where()->justRun();
     }
 
     public function getRoles()
@@ -101,4 +99,8 @@ class User extends BaseModel
         return $this->permissions;
     }
 
+    public function save()
+    {
+        // TODO: Implement save() method.
+    }
 }

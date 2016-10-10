@@ -16,7 +16,7 @@ class RolePermission extends BaseModel
     const C_CREATE_DATE = "create_date";
 
     // For PDO
-    public $id;
+//    public $id;
     public $role_id;
     public $permission_id;
     public $create_date;
@@ -28,4 +28,8 @@ class RolePermission extends BaseModel
         $this->setFetchMode($this->fetchMode, get_class($this));
     }
 
+    public function save()
+    {
+        // TODO: Implement save() method.
+    }
 }

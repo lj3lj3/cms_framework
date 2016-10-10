@@ -84,4 +84,8 @@ class WxpayResult extends BaseModel
         return $this->doInsert();
     }
 
+    public function save()
+    {
+        // TODO: Implement save() method.
+    }
 }

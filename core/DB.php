@@ -12,11 +12,15 @@ class DB
 {
     public static $TAG = "DB:";
 
-    // protected 用于之后继承
+    /**1
+     * protected 用于之后继承
+     * @var PDO
+     */
     protected $pdo;
 
     // 用于在prepare时连接数据库
     protected $dsn;
+    protected $charset;
     protected $name;
     protected $password;
 
@@ -33,8 +37,10 @@ class DB
     {
         if (array_key_exists($dbConfigName, $GLOBALS['config']['database'])) {
             $dbConfigs = $GLOBALS['config']['database'][$dbConfigName];
+            // 这里的charset只在php5.3之后生效，之前的版本需要使用exec命令手动设置
             $this->dsn = "{$dbConfigs['db']}:host={$dbConfigs['host']};charset={$dbConfigs['charset']};
             dbname={$dbConfigs['dbname']}";
+            $this->charset = $dbConfigs['charset'];
             $this->name = $dbConfigs['name'];
             $this->password = $dbConfigs['password'];
 //            $this->pdo = new PDO(, $dbConfigs['name'], $dbConfigs['password']);
@@ -54,6 +60,14 @@ class DB
     }
 
     /**
+     * 设置POD连接的参数
+     */
+    private function setParameters()
+    {
+        $this->pdo->exec("SET names {$this->charset}");
+    }
+
+    /**
      * 在这里进行连接数据库
      * @param null $sql
      * @param null $keyAndValues
@@ -63,6 +77,8 @@ class DB
     public function prepare($sql = null, $keyAndValues = null, $whereKeyAndValues = null)
     {
         $this->pdo = new PDO($this->dsn, $this->name, $this->password);
+        $this->setParameters();
+
         try {
             // If sql is empty, use query string
             if ($sql == null) {
@@ -125,6 +141,7 @@ class DB
         $this->fetchMode = $fetchMode;
         $this->fetchClass = $class;
 //        $this->pdoStatement->setFetchMode($fetchMode);
+        return $this;
     }
 
     public function execute($keyAndValues = null)
@@ -135,8 +152,8 @@ class DB
             $this->doBindValue();
         }
 
-        if($this->pdoStatement->execute()){
-            echo "true";
+        if(!$this->pdoStatement->execute()){
+            throw new Exception('PDO执行出错：'. $this->queryStr);
         }
 
         // 清空sql
@@ -340,7 +357,7 @@ class DB
      */
     public function on($modelLeft, $columnLeft, $modelRight, $columnRight)
     {
-        $onStr = '';
+//        $onStr = '';
         /*for ($i = 0; $i < count($models); $i++) {
             $onStr = "{$models[$i]->getTableName()}.{$columns[$i]}";
             if ($i%2 == 0) {

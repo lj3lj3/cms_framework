@@ -51,7 +51,7 @@ class WxpayController extends BaseController
 
         //初始化日志
         $logHandler = new CLogFileHandler($this->logPath . date('Y-m-d') . '.log');
-        $log = Log::Init($logHandler, 15);
+        $log = LogModel::Init($logHandler, 15);
 
         //①、获取用户openid
         $tools = new JsApiPay();
@@ -132,9 +132,9 @@ class WxpayController extends BaseController
 
         //初始化日志
         $logHandler = new CLogFileHandler($this->logPath . date('Y-m-d') . '.log');
-        $log = Log::Init($logHandler, 15);
+        $log = LogModel::Init($logHandler, 15);
 
-        Log::DEBUG("begin notify");
+        LogModel::DEBUG("begin notify");
         $notify = new PayNotifyCallBack();
         $notify->Handle(false);
     }
