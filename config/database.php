@@ -12,8 +12,10 @@ return array(
         'host' => 'localhost',
         'charset' => 'utf8',
 //        'dsn' => 'mysql:host=localhost;charset=utf8;dbname=test',
-        'dbname' => 'test',
+//        'dbname' => 'test',
+        'dbname' => 'cms',
         'name' => 'root',
         'password' => 'root',
+        'tableprefix' => 't_',
     ),
 );

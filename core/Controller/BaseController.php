@@ -9,12 +9,14 @@
 class BaseController
 {
     protected $tplDir;
+    protected $modelDir;
 
     protected $smarty;
 
     public function __construct()
     {
         $this->tplDir = dirname(dirname(dirname(__FILE__))) . '/resource/views/templates/';
+        $this->tplDir = dirname(dirname(__FILE__)). '/Model/';
         $this->smarty = $GLOBALS['smarty'];
     }
 }

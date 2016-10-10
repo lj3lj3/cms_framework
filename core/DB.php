@@ -14,8 +14,18 @@ class DB
 
     // protected 用于之后继承
     protected $pdo;
-    protected $pdoStatement;
+
+    // 用于在prepare时连接数据库
+    protected $dsn;
+    protected $name;
+    protected $password;
+
+    /**
+     * @var PDOStatement
+     */
+    protected $pdoStatement = null;
     protected $fetchMode = null;
+    protected $fetchClass = null;
     protected $pdoKeysAndValues = null;
     protected $pdoWhereKeysAndValues = null;
 
@@ -23,13 +33,14 @@ class DB
     {
         if (array_key_exists($dbConfigName, $GLOBALS['config']['database'])) {
             $dbConfigs = $GLOBALS['config']['database'][$dbConfigName];
-            $this->pdo = new PDO("{$dbConfigs['db']}:host={$dbConfigs['host']};charset={$dbConfigs['charset']};
-            dbname={$dbConfigs['dbname']}", $dbConfigs['name'], $dbConfigs['password']);
+            $this->dsn = "{$dbConfigs['db']}:host={$dbConfigs['host']};charset={$dbConfigs['charset']};
+            dbname={$dbConfigs['dbname']}";
+            $this->name = $dbConfigs['name'];
+            $this->password = $dbConfigs['password'];
+//            $this->pdo = new PDO(, $dbConfigs['name'], $dbConfigs['password']);
         } else {
             echo "not fonund this db config: $dbConfigName";
         }
-
-//        $this->fetchMode = PDO::FE
     }
 
     public function getPOD()
@@ -43,20 +54,32 @@ class DB
     }
 
     /**
-     * 返回PDOstatement
+     * 在这里进行连接数据库
+     * @param null $sql
+     * @param null $keyAndValues
+     * @param null $whereKeyAndValues
+     * @return $this
      */
-    public function prepare($sql, $keyAndValues = null, $whereKeyAndValues = null)
+    public function prepare($sql = null, $keyAndValues = null, $whereKeyAndValues = null)
     {
+        $this->pdo = new PDO($this->dsn, $this->name, $this->password);
         try {
+            // If sql is empty, use query string
+            if ($sql == null) {
+                $sql = $this->queryStr;
+            }
             $this->pdoStatement = $this->pdo->prepare($sql);
         } catch (PDOException $e) {
             echo $e->getMessage();
         }
 
-
         // Set fetch mode
         if ($this->fetchMode != null) {
-            $this->pdoStatement->setFetchMode($this->fetchMode);
+            if ($this->fetchClass != null) {
+                $this->pdoStatement->setFetchMode($this->fetchMode, $this->fetchClass);
+            } else {
+                $this->pdoStatement->setFetchMode($this->fetchMode);
+            }
         }
 
         if ($keyAndValues != null) {
@@ -76,14 +99,16 @@ class DB
         if ($this->pdoKeysAndValues != null) {
             // bind everything
             foreach ($this->pdoKeysAndValues as $key => $value) {
-                $this->pdoStatement->bindValue($key, $value);
+                $keyOK = $this->replaceDots($key);
+                $this->pdoStatement->bindValue(':'.$keyOK, $value);
             }
         }
 
         if ($this->pdoWhereKeysAndValues != null) {
             // bind everything
             foreach ($this->pdoWhereKeysAndValues as $key => $value) {
-                $this->pdoStatement->bindValue($key, $value);
+                $keyOK = $this->replaceDots($key);
+                $this->pdoStatement->bindValue(':'.$keyOK, $value);
             }
         }
 
@@ -95,9 +120,10 @@ class DB
         $this->doBindValue();
     }
 
-    public function setFetchMode($fetchMode)
+    public function setFetchMode($fetchMode, $class = null)
     {
         $this->fetchMode = $fetchMode;
+        $this->fetchClass = $class;
 //        $this->pdoStatement->setFetchMode($fetchMode);
     }
 
@@ -108,7 +134,15 @@ class DB
             $this->pdoKeysAndValues = $keyAndValues;
             $this->doBindValue();
         }
-        return $this->pdoStatement->execute();
+
+        if($this->pdoStatement->execute()){
+            echo "true";
+        }
+
+        // 清空sql
+        $this->queryStr = '';
+
+        return $this;
     }
 
     public function fetch()
@@ -132,7 +166,7 @@ class DB
     {
         $columns = array_keys($keyAndValues);
         $columnsString = implode(',', $columns);
-        $placeHolderString = ':' . implode(', :', $columns);
+        $placeHolderString = ':' . implode(', :', $this->replaceDots($columns));
         $this->pdoKeysAndValues = $keyAndValues;
         // ues refer
         // use foreach for better performance
@@ -165,7 +199,8 @@ class DB
             if($index != 0){
                 $setStr = $setStr . ', ';
             }
-            $setStr = $setStr . "{$key}=:{$key}";
+            $keyOK = $this->replaceDots($key);
+            $setStr = $setStr . "{$key}=:{$keyOK}";
 
             $index ++;
         }
@@ -176,7 +211,8 @@ class DB
             if($index != 0){
                 $whereStr = $whereStr . ', ';
             }
-            $whereStr = $whereStr . "{$key}=:{$key}";
+            $keyOK = $this->replaceDots($key);
+            $whereStr = $whereStr . "{$key}=:{$keyOK}";
 
             $index ++;
         }
@@ -213,7 +249,8 @@ class DB
             if($index != 0){
                 $whereStr = $whereStr . ' AND ';
             }
-            $whereStr = $whereStr . "{$key}=:{$key}";
+            $keyOK = $this->replaceDots($key);
+            $whereStr = $whereStr . "{$key}=:{$keyOK}";
 
             $index ++;
         }
@@ -235,7 +272,8 @@ class DB
             if($index != 0){
                 $whereStr = $whereStr . ' AND ';
             }
-            $whereStr = $whereStr . "{$key}=:{$key}";
+            $keyOK = $this->replaceDots($key);
+            $whereStr = $whereStr . "{$key}=:{$keyOK}";
 
             $index ++;
         }
@@ -245,23 +283,152 @@ class DB
 //         $this->pdoStatement->fetchAll();
     }
 
-
     private $queryStr;
 
     /**
      * TODO: 通过的builder构建
-     * 现在暂时只考虑具有外链关联的多张表的自动关联
+     * 现在暂时只考虑具有外链关联的两张表的自动关联
      * @param $selectedColumns
-     * @param $models
+     * @param $model BaseModel
      */
-    public function queryBuilder($selectedColumns, $models)
+    public function queryBuilder($selectedColumns, $model)
     {
         $selectedColStr = '';
-        $selectedColStr = implode(', ', $selectedColumns);
+        // 如果数组中只有一个元素，不进行implode
+        if (count($selectedColumns) != 1) {
+            $selectedColStr = implode(', ', $selectedColumns);
+        } else {
+            $selectedColStr = $selectedColumns[0];
+        }
 
+//        $tableStrArray = array();
+//        foreach ($models as $key => $model){
+//            $tableStrArray[$key] = $model->getTableName();
+//        }
+//        $tableStr = implode(', ', $tableStrArray);
 
+        $this->queryStr = "select {$selectedColStr} from {$model->getTableName()}";
+        return $this;
+    }
 
+    /**
+     * queryBuilder
+     * @param $model BaseModel
+     */
+    public function join($model)
+    {
+        $this->queryStr .= " left join {$model->getTableName()}";
+        return $this;
+    }
 
-        $this->queryStr = "select ";
+    /**
+     * queryBuilder
+     * @param $model BaseModel
+     */
+    public function rightJoin($model)
+    {
+        $this->queryStr .= " right join {$model->getTableName()}";
+        return $this;
+    }
+
+    /**
+     * @param $modelLeft BaseModel
+     * @param $columnLeft
+     * @param $modelRight BaseModel
+     * @param $columnRight
+     * @return $this
+     */
+    public function on($modelLeft, $columnLeft, $modelRight, $columnRight)
+    {
+        $onStr = '';
+        /*for ($i = 0; $i < count($models); $i++) {
+            $onStr = "{$models[$i]->getTableName()}.{$columns[$i]}";
+            if ($i%2 == 0) {
+                $onStr .= '=';
+            }
+        }*/
+
+        $this->queryStr .= " on {$modelLeft->getTableName()}.$columnLeft={$modelRight->getTableName()}.$columnRight";
+        return $this;
+    }
+
+    /**
+     * queryBuilder
+     * @param $whereKeyAndValues
+     * @param array $operations
+     * @return $this
+     */
+    public function where($whereKeyAndValues, $operations = array('='))
+    {
+        // set value
+        $this->pdoWhereKeysAndValues = $whereKeyAndValues;
+
+        $whereStrArray = array();
+        /*$index = 0;
+        foreach (array_keys($whereKeyAndValues) as $key) {
+            if($index != 0){
+                $whereStr = $whereStr . ', ';
+            }
+            $whereStr = $whereStr . "{$key}=:{$key}";
+
+            $index ++;
+        }*/
+        $keys = array_keys($whereKeyAndValues);
+
+        $isDefaultOperation = false;
+//        $operation = '';
+        if (count($operations) == 1 && $operations[0] == '=') {
+            $isDefaultOperation = true;
+        }
+        for ($i = 0; $i < count($whereKeyAndValues); $i++) {
+            if ($isDefaultOperation) {
+                $operation = '=';
+            } else {
+                $operation = $operations[$i];
+            }
+            // 替换占位符中的.为_
+            $keyOK = $this->replaceDots($keys[$i]);
+            $whereStrArray[$i] = "{$keys[$i]}{$operation}:{$keyOK}";
+        }
+
+        $whereStr = implode(', ', $whereStrArray);
+
+        $this->queryStr .= " where {$whereStr}";
+
+        return $this;
+    }
+
+    private function replaceDots($key)
+    {
+        return str_replace('.', '_', $key);
+    }
+
+    /**
+     * queryBuilder
+     * @param $orderColumns
+     * @param $descOrAsc
+     * @return $this
+     */
+    public function orderBy($orderColumns, $descOrAsc)
+    {
+        $orderStrArray = array();
+        for ($i = 0; $i < count($orderColumns); $i++) {
+            $orderStrArray[$i] = "$orderColumns[$i] $descOrAsc[$i]";
+        }
+//        $orderStr = ' order by ' . implode(', ', $orderStrArray);
+        $this->queryStr .= ' order by ' . implode(', ', $orderStrArray);
+        return $this;
+    }
+
+    /**
+     * 第一个参数是count
+     * queryBuilder
+     * @param $count
+     * @param int $offset
+     */
+    public function limit($count, $offset = 0)
+    {
+        $this->queryStr .= " limit {$offset}, {$count}";
+        return $this;
     }
 }

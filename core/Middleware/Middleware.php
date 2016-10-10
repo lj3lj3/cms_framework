@@ -18,5 +18,5 @@ interface Middleware{
      * @param Request $request
      * @return mixed
      */
-    public function handler(Request $request, \Closure $next);
+    public function handler(Request $request, Closure $next);
 }

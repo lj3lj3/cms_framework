@@ -8,5 +8,5 @@
 
 return array(
 //    'Core\Middleware\TempMiddleware',
-//    'Core\Middleware\CookieMiddleware',
+    'Core\Middleware\CookieMiddleware',
 );

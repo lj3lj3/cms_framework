@@ -1,9 +1,6 @@
 <?php
-namespace Core\Controller\admin;
 
-use Core\Controller\BaseController;
-
-require dirname(__DIR__) . '/BaseController.php';
+require dirname(dirname(__FILE__)) . '/BaseController.php';
 
 /**
  * Created by PhpStorm.

@@ -1,7 +1,4 @@
 <?php
-namespace Core\Middleware;
-
-use Core\Request;
 
 require_once 'Middleware.php';
 
@@ -18,7 +15,7 @@ class TempMiddleware implements Middleware
      * @param Request $request
      * @return mixed
      */
-    public function handler(Request $request, \Closure $next)
+    public function handler(Request $request, Closure $next)
     {
 //        if ($request->uri() == 'article/block') {
 //            echo "block</br>";

@@ -10,7 +10,7 @@
  */
 class Article extends BaseModel
 {
-    const TABLE_NAME = 't_article';
+    const TABLE_NAME = 'article';
     // columns of this table
     const C_TITLE = 'title';
     const C_CONTENT = 'content';
