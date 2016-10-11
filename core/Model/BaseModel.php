@@ -69,6 +69,10 @@ abstract class BaseModel
         return $this->db->queryAll($this);
     }
 
+    /**
+     * TODO: 自动匹配值并进行自动赋值操作
+     * @return mixed
+     */
     public abstract function save();
 
     public function doInsert()

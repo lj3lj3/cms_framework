@@ -17,7 +17,7 @@ Log::boot(new DBLogHandler());
 
 // For now
 define('ERROR_REPORT', 3);
-//const ERROR_REPORT = 1;
+
 // Set error reporting
 if(ERROR_REPORT==1) {
     error_reporting(E_ALL & ~E_NOTICE & ~E_DEPRECATED & ~E_STRICT);

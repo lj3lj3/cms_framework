@@ -16,7 +16,7 @@ class CookieMiddleware implements Middleware
      * @param Request $request
      * @return mixed
      */
-    public function handler(Request $request, Closure $next)
+    public function handler(Request $request, Middleware $next)
     {
 //        echo $request->uri();
 //        if ($request->uri() == 'article/cookie') {
@@ -25,7 +25,7 @@ class CookieMiddleware implements Middleware
 //        }
 //        echo "cookie before handler</br>";
 
-        $next($request);
+        $next->handler($request);
 //        echo "cookie after handler</br>";
         return;
     }

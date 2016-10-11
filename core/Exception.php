@@ -13,5 +13,5 @@ function exception_handler(Exception $exception)
 
 function error_handler($errno, $errstr, $errfile, $errline)
 {
-
+    echo '<b>Error:</b>' . $errno . $errstr . $errfile . $errline;
 }

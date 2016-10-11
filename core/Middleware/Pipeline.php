@@ -1,5 +1,5 @@
 <?php
-namespace Core\Middleware;
+//namespace Core\Middleware;
 
 /**
  * Created by PhpStorm.
@@ -59,10 +59,12 @@ class Pipeline
 
     /**
      * 开始流水线处理
-     * @param \Closure
-     * @return \Closure
+     * @param Closure
+     * @return Closure
      */
-    public function go(\Closure $first){
+    public function go(Middleware $first){
+
+
         return call_user_func(
             array_reduce(array_reverse($this->pipes),$this->getSlice(),$first),
             $this->passable);
@@ -70,18 +72,19 @@ class Pipeline
 
     /**
      * 包装迭代对象到闭包
-     * @return \Closure
+     * @return Closure
      */
     public function getSlice(){
         return function($stack,$pipe){
             return function($passable) use($stack,$pipe){
-                if($stack instanceof \Closure){
+                if($stack instanceof Middleware){
 //                    return call_user_func(array(new $pipe, $this->method),$passable,$stack);
                     return call_user_func(array(Pipeline::make($pipe), Pipeline::METHOD),$passable,$stack);
                 }
             } ;
         };
     }
+
 
     public static function make($className)
     {
