@@ -7,6 +7,7 @@
  */
 
 return array(
-//    'Core\Middleware\TempMiddleware',
-    'Core\Middleware\CookieMiddleware',
+    'PermissionMiddleware',
+    'CookieMiddleware',
+    'TempMiddleware',
 );

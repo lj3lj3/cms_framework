@@ -16,7 +16,7 @@ class BaseController
     public function __construct()
     {
         $this->tplDir = dirname(dirname(dirname(__FILE__))) . '/resource/views/templates/';
-        $this->tplDir = dirname(dirname(__FILE__)). '/Model/';
+        $this->modelDir = dirname(dirname(__FILE__)). '/Model/';
         $this->smarty = $GLOBALS['smarty'];
     }
 }

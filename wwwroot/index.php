@@ -14,7 +14,7 @@ require_once dirname(__FILE__) . '/../core/Router.php';
 require_once dirname(__FILE__) . '/../core/boot.php';
 require_once dirname(dirname(__FILE__)) . '/core/Middleware/Pipeline.php';
 
-require_once dirname(__FILE__) . '/../routes/web.php';
+//require_once dirname(__FILE__) . '/../routes/web.php';
 
 /*$uri = Request::uri();
 
@@ -28,18 +28,20 @@ $request = new Request();
 
 // middleware
 //public function middleware(Pipeline $pipeline){
-$pipeline = new Pipeline();
+
+
 
 // Closure only works on php 5.3 and above
 //$result = $pipeline->send($request)->through($GLOBALS['config']['middleware'])->go(function ($request) use ($routeFile) {
-//$router = new Router();
+$router = new Router();
 //
 //    require $routeFile;
 //
 //$router->direct($request->uri());
 //});
-$result = $pipeline->send($request)->through($GLOBALS['config']['middleware'])->go(new RouterMiddleware());
-
+// For php 5.2
+$pipeline = new Pipeline();
+$result = $pipeline->send($request)->through($GLOBALS['config']['middleware'])->go(new Router());
 /*if (!($result instanceof Request)) {
     throw new \Exception('Interrupt by middleware!');
 }*/

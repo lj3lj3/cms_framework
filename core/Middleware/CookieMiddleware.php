@@ -9,24 +9,18 @@ require_once 'Middleware.php';
  * Date: 2016/9/26
  * Time: 16:08
  */
-class CookieMiddleware implements Middleware
+class CookieMiddleware extends Middleware
 {
-    /**
-     * 中间件执行
-     * @param Request $request
-     * @return mixed
-     */
-    public function handler(Request $request, Middleware $next)
-    {
-//        echo $request->uri();
-//        if ($request->uri() == 'article/cookie') {
-//            echo "block</br>";
-//            return;
-//        }
-//        echo "cookie before handler</br>";
 
-        $next->handler($request);
-//        echo "cookie after handler</br>";
-        return;
+
+    public function handler($request, $pipes)
+    {
+        echo "before cookie<br>";
+
+        parent::handler($request, $pipes);
+
+        echo "after cookie<br>";
+
     }
+
 }

@@ -6,7 +6,7 @@
  * Date: 2016/10/9
  * Time: 11:39
  */
-class PermissionMiddleware implements Middleware
+class PermissionMiddleware extends Middleware
 {
 
     /**
@@ -14,9 +14,11 @@ class PermissionMiddleware implements Middleware
      * @param Request $request
      * @return mixed
      */
-    public function handler(Request $request, Closure $next)
+    public function handler($request, $pipes)
     {
+        echo "begin permission<br>";
+        parent::handler($request, $pipes);
 
-        $next($request);
+        echo "end permission<br>";
     }
 }

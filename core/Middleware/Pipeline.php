@@ -1,6 +1,8 @@
 <?php
 //namespace Core\Middleware;
 
+require_once 'Middleware.php';
+
 /**
  * Created by PhpStorm.
  * User: Daylemon
@@ -59,22 +61,34 @@ class Pipeline
 
     /**
      * 开始流水线处理
-     * @param Closure
-     * @return Closure
      */
-    public function go(Middleware $first){
+    public function go($first){
+//        $this->pipes = array_reverse($this->pipes);
+        $this->pipes[count($this->pipes)] = $first;
+        $this->pipes = array_reverse($this->pipes);
+
+        $middlewareStart = Pipeline::make(array_pop($this->pipes));
+        Middleware::handleStatic($middlewareStart, $this->passable, $this->pipes);
+    }
+
+    /**
+     * 开始流水线处理
+     * For php > 5.2
+     */
+    /*public function go(Middleware $first){
 
 
         return call_user_func(
             array_reduce(array_reverse($this->pipes),$this->getSlice(),$first),
             $this->passable);
-    }
+    }*/
 
     /**
      * 包装迭代对象到闭包
+     * For php > 5.2
      * @return Closure
      */
-    public function getSlice(){
+    /*public function getSlice(){
         return function($stack,$pipe){
             return function($passable) use($stack,$pipe){
                 if($stack instanceof Middleware){
@@ -83,17 +97,37 @@ class Pipeline
                 }
             } ;
         };
-    }
+    }*/
 
 
-    public static function make($className)
+    // This is for php > 5.2
+    /*public static function make($className)
     {
+        if ($className == null || $className instanceof Router) {
+            return $className;
+        }
 //        echo $className;
         $array = explode('\\', $className);
         $fileName = array_pop($array);
 //        require 'TempMiddleware.php';
 //        echo "{$fileName}.php";
         require "{$fileName}.php";
+//        require "TempMiddleware.php";
+
+        return new $className();
+    }*/
+
+    public static function make($className)
+    {
+        if ($className == null || $className instanceof Router) {
+            return $className;
+        }
+//        echo $className;
+        //$array = explode('\\', $className);
+        //$fileName = array_pop($array);
+//        require 'TempMiddleware.php';
+//        echo "{$fileName}.php";
+        require "{$className}.php";
 //        require "TempMiddleware.php";
 
         return new $className();
