@@ -13,7 +13,7 @@ require_once dirname(__FILE__) . '/Log/Log.php';
 require_once 'Exception.php';
 require_once dirname(dirname(__FILE__)) . '/vendor/smarty/libs/Smarty.class.php';
 // Log启动
-Log::boot(new DBLogHandler());
+Log::boot(new FileLogHandler());
 
 // For now
 define('ERROR_REPORT', 3);

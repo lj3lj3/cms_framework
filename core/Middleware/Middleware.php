@@ -12,28 +12,23 @@ require_once dirname(dirname(__FILE__)) . '/Router.php';
  */
 
 /**
- * 定义中间件接口,所有中间间都必须继承
- * Interface Middleware
+ * 定义中间件接口，所有中间件都需要继承
+ * 子类中重写handler方法，并调用parent::handler方法实现中间件的传递
+ * Class Middleware
  */
 class Middleware
 {
-    /**
-     * @var Middleware
-     */
-    protected $middlewareNext;
-    protected $pipes;
 
     /**
+     * 子类中重写后调用parent::handler方法实现中间件的传递
      * @param $request Request
      * @param $pipes array
      */
     public function handler($request, $pipes)
     {
-        $this->middlewareNext = Pipeline::make(array_pop($pipes));
-        $this->pipes = $pipes;
+        $middlewareNext = Pipeline::make(array_pop($pipes));
 
-
-        Middleware::handleStatic($this->middlewareNext, $request, $this->pipes);
+        Middleware::handleStatic($middlewareNext, $request, $pipes);
 //        if (!Middleware::route($this->middlewareNext, $request)) {
 //            $this->middlewareNext->handler($request, $pipes);
 //        }
@@ -47,6 +42,12 @@ class Middleware
 //        return false;
     }
 
+    /**
+     * @param $middleware Middleware
+     * @param $request Request
+     * @param $pipes Array
+     * @return bool
+     */
     public static function handleStatic($middleware, $request, $pipes)
     {
         // 到路由了

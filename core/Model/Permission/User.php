@@ -103,4 +103,18 @@ class User extends BaseModel
     {
         // TODO: Implement save() method.
     }
+
+    /**
+     * 通过用户名和密码确认用户是否存在
+     * @return bool
+     */
+    public function exist()
+    {
+        $this->whereKeyAndValue = array(
+            User::C_NAME => $this->name,
+            User::C_PASSWORD => $this->password,
+        );
+
+        return count($this->db->query($this, $this->whereKeyAndValue)) != 0;
+    }
 }

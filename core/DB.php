@@ -149,8 +149,8 @@ class DB
         // if keyAndValue is not blank, bind it
         if ($keyAndValues != null) {
             $this->pdoKeysAndValues = $keyAndValues;
-            $this->doBindValue();
         }
+        $this->doBindValue();
 
         if(!$this->pdoStatement->execute()){
             throw new Exception('PDO执行出错：'. $this->queryStr);
@@ -251,11 +251,13 @@ class DB
     }
 
     /**
-     * @param BaseModel $model
-     * @param $whereKeyAndValues Only support AND condition
-     * @return mixed
+     * 查询快捷方法
+     * @param $model BaseModel
+     * @param $whereKeyAndValues
+     *          Only support AND condition
+     * @return array
      */
-    public function query(BaseModel $model, $whereKeyAndValues)
+    public function query($model, $whereKeyAndValues)
     {
         // set value
         $this->pdoWhereKeysAndValues = $whereKeyAndValues;

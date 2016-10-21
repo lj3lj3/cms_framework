@@ -9,5 +9,5 @@
 return array(
     'PermissionMiddleware',
     'CookieMiddleware',
-    'TempMiddleware',
+//    'TempMiddleware',
 );

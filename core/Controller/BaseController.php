@@ -11,6 +11,9 @@ class BaseController
     protected $tplDir;
     protected $modelDir;
 
+    /**
+     * @var Smarty
+     */
     protected $smarty;
 
     public function __construct()

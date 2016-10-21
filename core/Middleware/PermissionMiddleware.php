@@ -9,16 +9,13 @@
 class PermissionMiddleware extends Middleware
 {
 
-    /**
-     * 中间件执行
-     * @param Request $request
-     * @return mixed
-     */
     public function handler($request, $pipes)
     {
-        echo "begin permission<br>";
+
+
+
         parent::handler($request, $pipes);
 
-        echo "end permission<br>";
+//        echo "end permission<br>";
     }
 }

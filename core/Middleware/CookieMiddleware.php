@@ -12,14 +12,16 @@ require_once 'Middleware.php';
 class CookieMiddleware extends Middleware
 {
 
-
     public function handler($request, $pipes)
     {
-        echo "before cookie<br>";
+
+//        setcookie("name", "middlewaretest");
+
+//        echo "before cookie<br>";
 
         parent::handler($request, $pipes);
 
-        echo "after cookie<br>";
+//        echo "after cookie<br>";
 
     }
 
