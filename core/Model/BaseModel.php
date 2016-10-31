@@ -21,6 +21,10 @@ abstract class BaseModel
     // 数据表的前缀 从配置文件中读取
     protected $tablePrefix = '';
 
+    /**
+     * 需使用getTableName获取到带有前缀的数据表名
+     * @var string
+     */
     protected $tableName = '';
 
     protected $db;
@@ -53,12 +57,22 @@ abstract class BaseModel
         $this->fetchMode = PDO::FETCH_CLASS|PDO::FETCH_PROPS_LATE;
     }
 
-    public function setFetchMode($fetchMode, $fetchClass)
+    public function setFetchMode($fetchMode = null, $fetchClass = null)
     {
-        $this->db->setFetchMode($fetchMode, $fetchClass);
+        if ($fetchMode != null) {
+            $this->fetchMode = $fetchMode;
+        }
+
+        if ($fetchClass != null) {
+            $this->fetchClass = $fetchClass;
+        }
+        $this->db->setFetchMode($this->fetchMode, $this->fetchClass);
         return $this;
     }
 
+    /**
+     * @return string 返回带有前缀的数据表名
+     */
     public function getTableName()
     {
         return $this->tablePrefix.$this->tableName;
@@ -74,6 +88,12 @@ abstract class BaseModel
      * @return mixed
      */
     public abstract function save();
+
+    /**
+     * 将对象转换成数组 用于前台显示
+     * @return mixed 包含全部变量的数组
+     */
+    public abstract function toArray();
 
     public function doInsert()
     {
@@ -171,6 +191,10 @@ abstract class BaseModel
         return $this->db->fetch();
     }
 
+    /**
+     * 依次调用prepare execute fetchAll函数
+     * @return array
+     */
     public function justRun()
     {
         return $this->db->prepare()->execute()->fetchAll();

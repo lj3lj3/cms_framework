@@ -1,0 +1,10 @@
+.linkList {
+    padding: 10px 8px;
+    height: 203px;
+}
+
+.linkList li {
+    line-height: 34px;
+    height: 34px;
+    list-style: none;
+}

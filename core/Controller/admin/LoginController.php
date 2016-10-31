@@ -40,6 +40,8 @@ class LoginController extends BaseController {
             $message = "{'title': '登录成功！','content': ''}";
             //TODO: 改进方案 1.返回给客户端一个页面 2.AJAX请求这个函数，都在客户端做跳转
             header("Location: /admin/admin/index");
+            $_SESSION[User::C_NAME] = $username;
+            //TODO: If remember password checkbox is checked, write user info into the cookies
         } else {
             $message = "{'title': '登录失败！','content': '用户名或密码错误'}";
         }

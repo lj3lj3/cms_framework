@@ -117,4 +117,13 @@ class User extends BaseModel
 
         return count($this->db->query($this, $this->whereKeyAndValue)) != 0;
     }
+
+    /**
+     * 将对象转换成数组 用于前台显示
+     * @return mixed 包含全部变量的数组
+     */
+    public function toArray()
+    {
+        // TODO: Implement toArray() method.
+    }
 }

@@ -6,7 +6,7 @@
  * Time: 11:19 PM
  */
 
-namespace Core\Controller;
+//namespace Core\Controller;
 
 require dirname(dirname(__FILE__)) . "/Model/BaseModel.php";
 require dirname(dirname(__FILE__)) . "/Model/Article.php";

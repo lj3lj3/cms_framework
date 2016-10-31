@@ -136,10 +136,10 @@ class DB
         $this->doBindValue();
     }
 
-    public function setFetchMode($fetchMode, $class = null)
+    public function setFetchMode($fetchMode, $fetchClass = null)
     {
         $this->fetchMode = $fetchMode;
-        $this->fetchClass = $class;
+        $this->fetchClass = $fetchClass;
 //        $this->pdoStatement->setFetchMode($fetchMode);
         return $this;
     }

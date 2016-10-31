@@ -1,0 +1,14 @@
+.footer {
+    text-align: center;
+    width: 1000px;
+    margin: 0 auto;
+}
+
+.footer li {
+    line-height: 30px;
+}
+
+.footer li, .footer li a {
+    font-family: "Microsoft YaHei";
+    color: #FFF;
+}

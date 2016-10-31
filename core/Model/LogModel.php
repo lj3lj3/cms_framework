@@ -35,13 +35,22 @@ class LogModel extends BaseModel
 
     public function save()
     {
-        $this->keyAndValue = array(
+        $this->keyAndValue = $this->toArray();
+        $this->doInsert();
+    }
+
+    /**
+     * 将对象转换成数组 用于前台显示
+     * @return mixed 包含全部变量的数组
+     */
+    public function toArray()
+    {
+        return array(
             LogModel::C_USER_ID => $this->user_id,
             LogModel::C_IP => $this->ip,
             LogModel::C_BROWSER => $this->browser,
             LogModel::C_ACTION => $this->action,
             LogModel::C_DATE => Util::getFormattedDateForDB(),
         );
-        $this->doInsert();
     }
 }
