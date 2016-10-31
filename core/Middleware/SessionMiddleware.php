@@ -14,6 +14,7 @@ class SessionMiddleware extends Middleware
 
     public function handler($request, $pipes)
     {
+        // 开启session
         session_start();
 
         parent::handler($request, $pipes);

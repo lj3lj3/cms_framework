@@ -54,7 +54,7 @@ class Middleware
         if ($middleware instanceof Router) {
             // 最后一个是Router
             $router = $middleware;
-            $router->direct($request->uri());
+            $router->direct($request);
             return true;
         }
         $middleware->handler($request, $pipes);

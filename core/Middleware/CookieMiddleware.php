@@ -14,7 +14,7 @@ class CookieMiddleware extends Middleware
 
     public function handler($request, $pipes)
     {
-
+        // TODO: 读取cookie中用户名和密码 进行校验 包含IP？
 //        setcookie("name", "middlewaretest");
 
 //        echo "before cookie<br>";

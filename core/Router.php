@@ -26,21 +26,26 @@ class Router
         $this->routes = $routes;
     }
 
-    public function direct($uri)
+    /**
+     * @param $request Request
+     */
+    public function direct($request)
     {
 
-        if(array_key_exists($uri, $this->routes)) {
+        if(array_key_exists($request->uri(), $this->routes)) {
 //            echo "success";
-            require $this->routes[$uri];
+            require $this->routes[$request->uri()];
 
             return;
         }
 
         // call default direct
-        $this->defaultDirect($uri);
+        $this->defaultDirect($request);
     }
 
     /**
+     * @param $request Request
+     *
      * URI自动匹配算法：<br>
      * 失效 -- /admin/edit => AdminController#edit <br>
      * 失效 -- /admin/admin/edit => /admin/AdminController#edit <br>
@@ -59,10 +64,10 @@ class Router
      * /admin/post/edit => /admin/PostController#edit <br>
      * /admin/author/post/edit => /admin/author/PostController#edit <br>
      */
-    private function defaultDirect($uri)
+    private function defaultDirect($request)
     {
         // url will be '' if user request root
-        $uriPis = explode('/', $uri);
+        $uriPis = $request->UriPieces();
 
         $dirName = '';
         $className = "Index";

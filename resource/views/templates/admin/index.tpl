@@ -153,7 +153,7 @@
         <a href="#" class="homelink"><span>网站首页</span></a>&nbsp;
         <a href="#" class="crearlink" target="main"><span>缓存管理</span></a>&nbsp;
         <a href="#" class="help"><span>使用手册</span></a>&nbsp;
-        <a href="#" class="exit"><span>退出登录</span></a>
+        <a href="/admin/logout" class="exit"><span>退出登录</span></a>
     </div>
 
     <div class="clear"></div>

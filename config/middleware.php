@@ -7,8 +7,7 @@
  */
 
 return array(
-    'PermissionMiddleware',
-    'CookieMiddleware',
+    'CookieMiddleware',     //首先使用Cookie中间件
     'SessionMiddleware',
-//    'TempMiddleware',
+    'PermissionMiddleware',
 );

@@ -57,7 +57,7 @@
     <span class="systemlogo"></span>
     <div class="loginbox" style="position: absolute; left: 614px;">
         <ul>
-            <form name="formlogin" method="post" action="/admin/login/doLogin">
+            <form name="formlogin" method="post" action="/admin/doLogin">
                 <input type="hidden" name="originator" value="140640">
                 <li><input name="adminname" type="text" class="loginuser"
                            onblur="{literal}if(this.value==&#39;&#39;){this.value=&#39;请输入用户名&#39;}{/literal}"

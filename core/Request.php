@@ -11,6 +11,8 @@
 class Request
 {
     protected $uri;
+    // array of uri
+    protected $uriPieces;
     protected $parameters;
     protected $method;
     protected $post;
@@ -23,6 +25,7 @@ class Request
     public function __construct()
     {
         $this->uri = trim($_SERVER['REDIRECT_URL'], '/');
+        $this->uriPieces = explode('/', $this->uri);
 
         parse_str($_SERVER['QUERY_STRING'], $parr);
         $this->parameters = $parr;
@@ -44,7 +47,19 @@ class Request
         return $this->uri;
     }
 
-    // set uri, for testing
+    public function uriPieces()
+    {
+        return $this->uriPieces;
+    }
+
+    public function firstUriPiece()
+    {
+        return $this->uriPieces[0];
+    }
+
+    /**
+     * set uri, for testing
+     */
     public function setUri($uri)
     {
         $this->uri = $uri;
