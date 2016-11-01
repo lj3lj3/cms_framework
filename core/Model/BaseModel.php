@@ -40,10 +40,10 @@ abstract class BaseModel
     // fetch class
     protected $fetchClass;
 
-    /*public static function newInstance()
+    public static function newInstance($id = null)
     {
-        return new self();
-    }*/
+        return new static($id);
+    }
 
     public function __construct()
     {

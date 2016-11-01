@@ -35,7 +35,7 @@ class FileLogHandler implements LogHandler
             throw new Exception("打开日志文件错误");
         }
 
-        fwrite($this->handler, date('Y-m-d H-i-s') . $msg . PHP_EOL);
+        fwrite($this->handler, date('Y-m-d H-i-s') . " " . $msg . " " . PHP_EOL);
 
         fclose($this->handler);
     }

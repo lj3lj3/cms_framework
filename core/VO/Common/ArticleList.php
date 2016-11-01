@@ -18,7 +18,7 @@ class ArticleList
         $this->list[$title] = $link;
     }
 
-    public function get()
+    public function toArray()
     {
         return $this->list;
     }

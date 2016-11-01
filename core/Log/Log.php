@@ -46,37 +46,37 @@ class Log
 
     public static function debug($tag, $msg)
     {
-        Log::$instance->log("debug:$tag$msg");
+        Log::$instance->log("debug:[$tag]$msg");
     }
 
     public static function info($tag, $msg)
     {
-        Log::$instance->log("info:$tag$msg");
+        Log::$instance->log("info:[$tag]$msg");
     }
 
     public static function notice($tag, $msg)
     {
-        Log::$instance->log("notice:$tag$msg");
+        Log::$instance->log("notice:[$tag]$msg");
     }
 
     public static function warning($tag, $msg)
     {
-        Log::$instance->log("warning:$tag$msg");
+        Log::$instance->log("warning:[$tag]$msg");
     }
 
     public static function error($tag, $msg)
     {
-        Log::$instance->log("error:$tag$msg");
+        Log::$instance->log("error:[$tag]$msg");
     }
 
     public static function alert($tag, $msg)
     {
-        Log::$instance->log("alert:$tag$msg");
+        Log::$instance->log("alert:[$tag]$msg");
     }
 
     public static function emergency($tag, $msg)
     {
-        Log::$instance->log("emergency:$tag$msg");
+        Log::$instance->log("emergency:[$tag]$msg");
     }
 
     public static function logModel($logModel)

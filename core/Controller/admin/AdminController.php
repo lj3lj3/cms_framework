@@ -11,13 +11,13 @@ require_once dirname(dirname(dirname(__FILE__))) . "/Session.php";
  * Time: 11:19
  */
 
-
 //require dirname(dirname(dirname(__FILE__))) . "/Model/BaseModel.php";
 //require dirname(dirname(__FILE__)) . '/BaseController.php';
 
-
 class AdminController extends BaseController
 {
+    const TAG = "AdminController";
+
     const USER_NAME = "adminname";
     const PASSWORD = "password";
 
@@ -38,6 +38,9 @@ class AdminController extends BaseController
         $this->smarty->display($this->tplDir . 'admin/login/index.tpl');
     }
 
+    /**
+     * 客户POST提交登录信息
+     */
     public function doLogin()
     {
         /**
@@ -63,10 +66,13 @@ class AdminController extends BaseController
         }
 
         echo $message;
+
+        Log::info(AdminController::TAG, "$message");
     }
 
     public function logout()
     {
+        Log::info(AdminController::TAG, $_SESSION[User::C_NAME] . " is logout");
         Session::userLogout();
         header("Location: /admin");
     }
