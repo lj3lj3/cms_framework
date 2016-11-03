@@ -141,7 +141,7 @@
     <div id="menunav">
         <ul>
             <li id="map-system">工作台</li>
-            <li id="map-shop">内容</li>
+            <li id="map-shop" ><a href="admin/adminArticle/index">内容</a></li>
             <li id="map-cms">项目模块</li>
             <li id="map-circle">界面</li>
             <li id="map-microshop">系统</li>

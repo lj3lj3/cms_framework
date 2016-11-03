@@ -6,7 +6,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <title>欢迎登录DFCMS-网站管理系统</title>
 
-    <link href="/css/admin/login/style.css" rel="stylesheet" type="text/css">
+    <link href="/css/admin/style.css" rel="stylesheet" type="text/css">
     <script src="http://lib.sinaapp.com/js/jquery/1.8.3/jquery.min.js" type="text/javascript"></script>
     <script src="/js/admin/login/cloud.js" type="text/javascript"></script>
     {literal}

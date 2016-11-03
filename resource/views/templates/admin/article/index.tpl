@@ -4,7 +4,7 @@
     <link href="/css/admin/style.css" rel="stylesheet" type="text/css">
     <link href="/css/admin/select.css" rel="stylesheet" type="text/css">
     <script type="text/javascript" src="/js/jquery.js"></script>
-    <script type="text/javascript" src="/js/admin/select-ui.js"></script>
+    <script type="text/javascript" src="/js/admin/select-ui_min.js"></script>
 
     <script type="text/javascript">
         $(document).ready(function(){

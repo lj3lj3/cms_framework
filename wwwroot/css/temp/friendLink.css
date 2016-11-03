@@ -1,0 +1,10 @@
+.content .linkList {
+    padding: 10px 8px;
+    /*height: 203px;*/
+}
+
+.content .linkList li {
+    float: left;
+    line-height: 35px;
+    margin: 0 5px;
+}

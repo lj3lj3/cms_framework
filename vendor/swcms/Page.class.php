@@ -23,7 +23,11 @@ class Pagex{
             // DayL mod
 //          $this->total = intval(@$total);
           $this->pagesize = $pagesize;
-          $this->pagename = $pagename;          
+          $this->pagename = $pagename;
+            // DayL mod 添加默认
+            if (!isset($_REQUEST[$this->pagename])) {
+                $_REQUEST[$this->pagename] = 0;
+            }
           $this->pagelist = $pagelist;          
           $this->pagetext = $pagetext;     
           $this->thispage = ($this->currpage()-1)*$this->pagesize;
