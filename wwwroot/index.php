@@ -39,9 +39,20 @@ $router = new Router();
 //
 //$router->direct($request->uri());
 //});
+// 添加debug执行时间调试
+$tStart = 0;
+if ($GLOBALS['config']['debug'] == true) {
+    $tStart = microtime(true);
+}
 // For php 5.2
 $pipeline = new Pipeline();
 $result = $pipeline->send($request)->through($GLOBALS['config']['middleware'])->go(new Router());
+
+if ($GLOBALS['config']['debug'] == true) {
+    $timeUsed =  microtime(true) - $tStart;
+    Log::debug("page", "Time used: $timeUsed");
+    echo $timeUsed;
+}
 /*if (!($result instanceof Request)) {
     throw new \Exception('Interrupt by middleware!');
 }*/

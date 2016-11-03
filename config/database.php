@@ -9,7 +9,7 @@
 return array(
     'mysql' => array(
         'db' => 'mysql',
-        'host' => 'localhost',
+        'host' => '127.0.0.1',
         'charset' => 'utf8',
 //        'dsn' => 'mysql:host=localhost;charset=utf8;dbname=test',
 //        'dbname' => 'test',

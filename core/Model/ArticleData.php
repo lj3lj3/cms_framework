@@ -10,10 +10,17 @@ class ArticleData extends BaseModel
 {
     const TABLE_NAME = 'article_data';
 
-    public function __construct()
+    const C_CONTENT = "content";
+
+    const EDITOR_VALUE = "editorValue";
+
+    public $content;
+
+
+    public function __construct($id = null)
     {
         $this->tableName = ArticleData::TABLE_NAME;
-        parent::__construct();
+        parent::__construct($id);
     }
 
     /**
@@ -22,8 +29,16 @@ class ArticleData extends BaseModel
      */
     public function save()
     {
-        // TODO: Implement save() method.
+        $this->keyAndValue = $this->toArray();
+        return $this->doInsert();
     }
+
+    /*public function update()
+    {
+        return parent::update(array(
+            ArticleData::C_CONTENT => $this->content,
+        ));
+    }*/
 
     /**
      * 将对象转换成数组 用于前台显示
@@ -31,6 +46,9 @@ class ArticleData extends BaseModel
      */
     public function toArray()
     {
-        // TODO: Implement toArray() method.
+        return array(
+            ArticleData::C_ID => $this->id,
+            ArticleData::C_CONTENT => $this->content
+        );
     }
 }

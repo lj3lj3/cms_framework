@@ -15,12 +15,17 @@ class BaseController
      * @var Smarty
      */
     protected $smarty;
+    /**
+     * @var Request
+     */
+    protected $request;
 
     public function __construct()
     {
         $this->tplDir = dirname(dirname(dirname(__FILE__))) . '/resource/views/templates/';
         $this->modelDir = dirname(dirname(__FILE__)). '/Model/';
         $this->smarty = $GLOBALS['smarty'];
+        $this->request = $GLOBALS['request'];
     }
 
     // TODO: 在middleware中调用每个目录的Controller中的此方法 进行权限检查

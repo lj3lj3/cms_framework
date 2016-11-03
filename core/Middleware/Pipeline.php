@@ -116,7 +116,10 @@ class Pipeline
 
         return new $className();
     }*/
-
+    /**
+     * @param $className
+     * @return mixed Middleware
+     */
     public static function make($className)
     {
         if ($className == null || $className instanceof Router) {

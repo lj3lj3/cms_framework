@@ -8,7 +8,7 @@
 
 $config = array(
     'name' => 'CMS',
-    'debug' => 'on',
+    'debug' => true,
     'database' => require 'database.php',
     'plugin' => require 'plugin.php',
     'middleware' => require 'middleware.php',

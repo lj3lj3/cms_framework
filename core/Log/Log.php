@@ -46,7 +46,9 @@ class Log
 
     public static function debug($tag, $msg)
     {
-        Log::$instance->log("debug:[$tag]$msg");
+        if ($GLOBALS['config']['debug'] == true) {
+            Log::$instance->log("debug:[$tag]$msg");
+        }
     }
 
     public static function info($tag, $msg)

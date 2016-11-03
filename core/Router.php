@@ -10,6 +10,8 @@
 
 class Router
 {
+    const TAG = "Router";
+
     protected $routes = array();
 
 //    public static function load($file)

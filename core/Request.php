@@ -35,6 +35,8 @@ class Request
         // Only on set
         if (isset($_POST)) {
             $this->post = $_POST;
+            // 包含POST数据
+            $this->parameters = array_merge($this->parameters, $this->post);
         }
 
     }
@@ -75,6 +77,20 @@ class Request
 //        }
 
 //        return array();
+    }
+
+    /**
+     * @param $name string 获取的参数的名称
+     * @param null $default 参数不存在时返回的默认值
+     * @return null
+     */
+    public function getParam($name, $default = NULL)
+    {
+        if (isset($this->parameters[$name])) {
+            return $this->parameters[$name];
+        }
+
+        return $default;
     }
 
     public function method()

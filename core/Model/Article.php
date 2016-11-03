@@ -11,6 +11,8 @@ require_once dirname(__FILE__) . "/ArticleData.php";
  */
 class Article extends BaseModel
 {
+    const TAG = "Article";
+
     const TABLE_NAME = 'article';
 
     // columns of this table
@@ -65,7 +67,7 @@ class Article extends BaseModel
     /**
      * 这是是article_data之中的数据
      */
-    const C_CONTENT = "content";
+//    const C_CONTENT = "content";
 
 //    protected $pdo = '';
     public $catId = '';
@@ -90,7 +92,7 @@ class Article extends BaseModel
     public $sort = '';
     public $status = '';
 
-    public $content = '';
+//    public $content = '';
 
 //    protected $content = '';
 
@@ -114,11 +116,7 @@ class Article extends BaseModel
 //        $this->pdo = new PDO('mysql:host=localhost;charset=utf8;dbname=test', 'root', 'root');
 //        $this->pdo = new PDO($dbConfig['dsn'], $dbConfig['name'], $dbConfig['password']);
         $this->tableName = Article::TABLE_NAME;
-        parent::__construct();
-
-        if ($id != null) {
-            $this->id = $id;
-        }
+        parent::__construct($id);
     }
 
     /*public function queryAll()
@@ -157,39 +155,17 @@ class Article extends BaseModel
 //        $this->pdo
 //        $statement = $this->pdo->query('select * from '. $this->tableName . ' where id = ' . $id);
 //        $statement->setFetchMode(PDO::FETCH_OBJ);
-        return $this->queryBuilder("*")->join($articleData)->on($article, Article::C_ID, $articleData, ArticleData::C_ID)->where()
+        return $this->queryBuilder("*")->join($articleData)->on($article, Article::C_ID, $articleData,
+        ArticleData::C_ID)->where()
             ->justRun();
-    }
-
-    public function update($keyAndValues)
-    {
-        $this->keyAndValue = $keyAndValues;
-
-        $this->whereKeyAndValue = array(
-            Article::C_ID => $this->id,
-        );
-        return $this->doUpdate();
-//        $result =
-//        $statement = $this->pdo->prepare("update $this->tableName set title=:title, content=:content where
-//        id=:id");
-//        $statement->setAttribute(":table", $this->tableName);
-//        $statement->setAttribute(":title", $title);
-//        $statement->setAttribute(":content", $content);
-//        $statement->setAttribute(":id", $id);
-//        return $statement->execute(array(
-////            ":table" => $this->tableName,
-//            ":title" => $title,
-//            ":content" => $content,
-//            ":id" => $id,
-//        ));
-//        $statement = $this->pdo->query('select * from '. $this->tableName . ' where id = ' . $id);
-//        $statement->setFetchMode(PDO::FETCH_OBJ);
-
     }
 
     public function save()
     {
         $this->keyAndValue = $this->toArray();
+        // 不写入点击量
+        unset($this->keyAndValue[Article::C_HITS]);
+
         return $this->doInsert();
 //        $statement = $this->pdo->prepare("insert into $this->tableName (title, content) VALUES (:title,
 //        :content)");
@@ -207,17 +183,8 @@ class Article extends BaseModel
 //        $statement->setFetchMode(PDO::FETCH_OBJ);
     }
 
-    public function delete()
-    {
-        $this->whereKeyAndValue = array(
-            BaseModel::C_ID => $this->id,
-        );
-
-        return $this->doDelete();
-    }
-
     /**
-     * 将对象转换成数组 用于前台显示
+     * 将对象转换成数组 用于前台显示和后台持久化
      * @return mixed 包含全部变量的数组
      */
     public function toArray()

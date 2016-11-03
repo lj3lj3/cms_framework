@@ -11,8 +11,13 @@ require_once dirname(dirname(__FILE__)) . '/DB.php';
 
 abstract class BaseModel
 {
+    const TAG = "BaseModel";
+
     const C_ID = 'id';
     const TABLE_PREFIX = 'tableprefix';
+
+    const DESC = "desc";
+    const ASC = "asc";
 
     public $id;
 
@@ -45,7 +50,7 @@ abstract class BaseModel
         return new static($id);
     }
 
-    public function __construct()
+    public function __construct($id = null)
     {
         $this->db = new DB($this->dbConfig);
         if (array_key_exists($this->dbConfig, $GLOBALS['config']['database'])) {
@@ -55,6 +60,10 @@ abstract class BaseModel
         }
 //        $this->db->setFetchMode(PDO::FETCH_OBJ);
         $this->fetchMode = PDO::FETCH_CLASS|PDO::FETCH_PROPS_LATE;
+
+        if ($id != null) {
+            $this->id = $id;
+        }
     }
 
     public function setFetchMode($fetchMode = null, $fetchClass = null)
@@ -105,9 +114,45 @@ abstract class BaseModel
         return $this->db->query($this, $this->whereKeyAndValue);
     }
 
+    public function update($keyAndValues)
+    {
+        $this->keyAndValue = $keyAndValues;
+
+        $this->whereKeyAndValue = array(
+            BaseModel::C_ID => $this->id,
+        );
+        return $this->doUpdate();
+//        $result =
+//        $statement = $this->pdo->prepare("update $this->tableName set title=:title, content=:content where
+//        id=:id");
+//        $statement->setAttribute(":table", $this->tableName);
+//        $statement->setAttribute(":title", $title);
+//        $statement->setAttribute(":content", $content);
+//        $statement->setAttribute(":id", $id);
+//        return $statement->execute(array(
+////            ":table" => $this->tableName,
+//            ":title" => $title,
+//            ":content" => $content,
+//            ":id" => $id,
+//        ));
+//        $statement = $this->pdo->query('select * from '. $this->tableName . ' where id = ' . $id);
+//        $statement->setFetchMode(PDO::FETCH_OBJ);
+
+    }
+
     public function doUpdate()
     {
         return $this->db->update($this, $this->keyAndValue, $this->whereKeyAndValue);
+    }
+
+
+    public function delete()
+    {
+        $this->whereKeyAndValue = array(
+            BaseModel::C_ID => $this->id,
+        );
+
+        return $this->doDelete();
     }
 
     public function doDelete()
@@ -157,15 +202,20 @@ abstract class BaseModel
 
     }
 
+    /**
+     * @param $orderColumns array
+     * @param $descOrAsc array
+     * @return $this
+     */
     public function orderBy($orderColumns, $descOrAsc)
     {
-        $this->db->where($orderColumns, $descOrAsc);
+        $this->db->orderBy($orderColumns, $descOrAsc);
         return $this;
     }
 
-    public function limit($count, $offset = 0)
+    public function limit($offset, $count)
     {
-        $this->db->limit($count, $offset);
+        $this->db->limit($offset, $count);
         return $this;
     }
 
@@ -197,6 +247,18 @@ abstract class BaseModel
      */
     public function justRun()
     {
-        return $this->db->prepare()->execute()->fetchAll();
+        $timeBefore = 0;
+        if ($GLOBALS['config']['debug'] == true) {
+            $timeBefore = microtime(true);
+        }
+
+        $result = $this->db->prepare()->execute()->fetchAll();
+
+        if ($GLOBALS['config']['debug'] == true) {
+            $timeUsed = microtime(true) - $timeBefore;
+            Log::debug(BaseModel::TAG, "justRun time used: $timeUsed");
+        }
+
+        return $result;
     }
 }

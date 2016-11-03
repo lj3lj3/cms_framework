@@ -1,6 +1,7 @@
 <?php
 //namespace Core;
 //use Core\Model\BaseModel;
+require_once dirname(__FILE__) . "/Log/Log.php";
 
 /**
  * Created by PhpStorm.
@@ -10,13 +11,15 @@
  */
 class DB
 {
-    public static $TAG = "DB:";
+    const TAG = "DB";
 
     /**1
      * protected 用于之后继承
      * @var PDO
      */
     protected $pdo;
+
+    private $queryStr = null;
 
     // 用于在prepare时连接数据库
     protected $dsn;
@@ -32,6 +35,8 @@ class DB
     protected $fetchClass = null;
     protected $pdoKeysAndValues = null;
     protected $pdoWhereKeysAndValues = null;
+
+    protected $result;
 
     public function __construct($dbConfigName)
     {
@@ -76,6 +81,10 @@ class DB
      */
     public function prepare($sql = null, $keyAndValues = null, $whereKeyAndValues = null)
     {
+        $timeBefore = 0;
+        if ($GLOBALS['config']['debug'] == true) {
+            $timeBefore = microtime(true);
+        }
         $this->pdo = new PDO($this->dsn, $this->name, $this->password);
         $this->setParameters();
 
@@ -83,6 +92,9 @@ class DB
             // If sql is empty, use query string
             if ($sql == null) {
                 $sql = $this->queryStr;
+            } else if($this->queryStr == null){
+                // If sql is not null, but queryStr is null, set it back
+                $this->queryStr = $sql;
             }
             $this->pdoStatement = $this->pdo->prepare($sql);
         } catch (PDOException $e) {
@@ -106,6 +118,11 @@ class DB
         }
 
         $this->doBindValue();
+
+        if ($GLOBALS['config']['debug'] == true) {
+            $timeUsed = microtime(true) - $timeBefore;
+            Log::debug(DB::TAG, "Prepare time used: $timeUsed");
+        }
 
         return $this;
     }
@@ -146,20 +163,44 @@ class DB
 
     public function execute($keyAndValues = null)
     {
+        $timeBefore = 0;
+        if ($GLOBALS['config']['debug'] == true) {
+            $timeBefore = microtime(true);
+        }
         // if keyAndValue is not blank, bind it
         if ($keyAndValues != null) {
             $this->pdoKeysAndValues = $keyAndValues;
         }
         $this->doBindValue();
-
-        if(!$this->pdoStatement->execute()){
+        $this->result = $this->pdoStatement->execute();
+        if(!$this->result){
             throw new Exception('PDO执行出错：'. $this->queryStr);
+        }
+
+        if ($GLOBALS['config']['debug'] == true) {
+            $timeUsed = microtime(true) - $timeBefore;
+            Log::debug(DB::TAG, "Execute: $this->queryStr time used: $timeUsed");
         }
 
         // 清空sql
         $this->queryStr = '';
 
         return $this;
+    }
+
+    public function result()
+    {
+        return $this->result;
+    }
+
+    public function rowCount()
+    {
+        return $this->pdoStatement->rowCount();
+    }
+
+    public function lastInsertId()
+    {
+        return $this->pdo->lastInsertId();
     }
 
     public function fetch()
@@ -199,7 +240,7 @@ class DB
 //        }
 
         return $this->prepare("insert into {$model->getTableName()} ({$columnsString}) values 
-        ({$placeHolderString})")->execute();
+        ({$placeHolderString})")->execute()->lastInsertId();
     }
 
     public function update(BaseModel $model, $keyAndValues, $whereKeyAndValues)
@@ -247,7 +288,7 @@ class DB
 //        }
 
         // UPDATE table set xxxx
-        return $this->prepare("update {$model->getTableName()} set {$setStr} where ({$whereStr})")->execute();
+        return $this->prepare("update {$model->getTableName()} set {$setStr} where ({$whereStr})")->execute()->rowCount();
     }
 
     /**
@@ -297,24 +338,24 @@ class DB
             $index ++;
         }
 
-        return $this->prepare("delete from {$model->getTableName()} where ({$whereStr})")->execute();
+        return $this->prepare("delete from {$model->getTableName()} where ({$whereStr})")->execute()->rowCount();
 //
 //         $this->pdoStatement->fetchAll();
     }
 
-    private $queryStr;
-
     /**
      * TODO: 通过的builder构建
      * 现在暂时只考虑具有外链关联的两张表的自动关联
-     * @param $selectedColumns
+     * @param $selectedColumns array 可为数组或者单一字符串
      * @param $model BaseModel
      */
     public function queryBuilder($selectedColumns, $model)
     {
         $selectedColStr = '';
+        if (!is_array($selectedColumns)) {
+            $selectedColStr = $selectedColumns;
         // 如果数组中只有一个元素，不进行implode
-        if (count($selectedColumns) != 1) {
+        }else if (count($selectedColumns) != 1) {
             $selectedColStr = implode(', ', $selectedColumns);
         } else {
             $selectedColStr = $selectedColumns[0];
@@ -424,8 +465,8 @@ class DB
 
     /**
      * queryBuilder
-     * @param $orderColumns
-     * @param $descOrAsc
+     * @param $orderColumns array
+     * @param $descOrAsc array
      * @return $this
      */
     public function orderBy($orderColumns, $descOrAsc)
@@ -442,10 +483,10 @@ class DB
     /**
      * 第一个参数是count
      * queryBuilder
-     * @param $count
      * @param int $offset
+     * @param int $count
      */
-    public function limit($count, $offset = 0)
+    public function limit($offset, $count)
     {
         $this->queryStr .= " limit {$offset}, {$count}";
         return $this;
