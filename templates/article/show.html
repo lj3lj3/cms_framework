@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"><head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <title>{$data['article'].title}</title>
+    <title>{$data['article']['title']}</title>
 
     <meta name="filetype" content="0">
     <meta name="publishedtype" content="1">
@@ -105,9 +105,9 @@
     <div class="conter artical">
         <!-- 文章列表 -->
         <div class="artleft artshow">
-            {include file='../common/divTitle.tpl' divTitle=$data['divTitle']}
+            {include common/divTitle.html}
             <div class="artbox">
-                {include file='../common/article.tpl' article=$data['article']}
+                {include common/article.html}
             </div>
         </div>
         <div class="clear"></div>

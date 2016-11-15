@@ -1,11 +1,6 @@
 <?php
 
-require_once dirname(dirname(dirname(__FILE__))) . "/Model/BaseModel.php";
-require_once dirname(dirname(dirname(__FILE__))) . "/Model/Article.php";
-require_once dirname(dirname(__FILE__)) . '/BaseController.php';
-
-require_once dirname(dirname(dirname(__FILE__))) . '/VO/Common/DivTitle.php';
-require_once dirname(dirname(dirname(__FILE__))) . '/Model/Article.php';
+defined('IN_CMS') or exit('No direct script access allowed');;
 /**
  * Created by PhpStorm.
  * User: Daylemon
@@ -14,31 +9,36 @@ require_once dirname(dirname(dirname(__FILE__))) . '/Model/Article.php';
  */
 class ArticleController extends BaseController
 {
-
+    const TAG = 'ArticleController';
 
     public function show()
     {
-        $divTitle = new DivTitle();
-        $divTitle->left_title = "要闻";
-        $divTitle->add2right("首页", "http://yl.wenming.cn/");
-        $divTitle->add2right("要闻", "http://yl.wenming.cn/jrtj/");
-        $data['divTitle'] = $divTitle->toArray();
+        $data['divTitle'] = array(
+            'img' => '',
+            'left_title' => '要闻',
+            'left_link' => '',
+            'right' => array(
+                '首页' => 'http://yl.wenming.cn/',
+                '要闻' => 'http://yl.wenming.cn/jrtj/',
+            ),
+        );
 
-        $id = $this->request->getParam("id");
-        if ($id == NULL) {
-            $id = 1;
-        }
-
+        $id = getRequestParam('id');
+        $db = new DB();
+        $tArticleName = $db->tablePrefix . 'article';
+        $tArticleDataName = $db->tablePrefix . 'article_data';
         /**
          * @var $articleArray array
          */
-        $articleArray = Article::newInstance($id)->queryWithContent();
+        $articleArray = $db->sql("select * from $tArticleName left join $tArticleDataName on $tArticleName.id = 
+        $tArticleDataName.id where $tArticleName.id = $id");
+
         // 转换时间
-        $articleArray[0][Article::C_UPDATE_TIME] = date("Y-m-d H:i:s", $articleArray[0][Article::C_UPDATE_TIME]);
+        $articleArray[0]['updatetime'] = getFormattedTime($articleArray[0]['updatetime']);
 
         $data['article'] = $articleArray[0];
 
-        $this->smarty->assign("data", $data);
-        $this->smarty->display($this->tplDir . "article/show.tpl");
+        $this->tpl->assign("data", $data);
+        $this->tpl->display(tpl_dir . "article/show.html");
     }
 }

@@ -21,12 +21,4 @@ class DBLogHandler implements LogHandler
 
     }
 
-    /**
-     * @param $log LogModel
-     * @return mixed
-     */
-    public function writeModel($log)
-    {
-        $log->save();
-    }
 }

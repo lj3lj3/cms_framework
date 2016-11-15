@@ -8,29 +8,29 @@
  */
 class BaseController
 {
-    protected $tplDir;
-    protected $modelDir;
+//    protected $tplDir;
+//    protected $modelDir;
+
+    /**
+     * @var Template
+     */
+    protected $tpl;
 
     /**
      * @var Smarty
      */
-    protected $smarty;
+//    protected $smarty;
     /**
      * @var Request
      */
-    protected $request;
+//    protected $request;
 
     public function __construct()
     {
-        $this->tplDir = dirname(dirname(dirname(__FILE__))) . '/resource/views/templates/';
-        $this->modelDir = dirname(dirname(__FILE__)). '/Model/';
-        $this->smarty = $GLOBALS['smarty'];
-        $this->request = $GLOBALS['request'];
-    }
-
-    // TODO: 在middleware中调用每个目录的Controller中的此方法 进行权限检查
-    public static function checkPermission($request)
-    {
-
+//        $this->tplDir = dirname(dirname(dirname(__FILE__))) . '/resource/views/templates/';
+//        $this->modelDir = dirname(dirname(__FILE__)). '/Model/';
+//        $this->smarty = $GLOBALS['smarty'];
+//        $this->request = $GLOBALS['request'];
+        $this->tpl = $GLOBALS['tpl'];
     }
 }

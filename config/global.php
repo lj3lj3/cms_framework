@@ -6,6 +6,9 @@
  * Time: 11:08 PM
  */
 
+defined('IN_CMS') or exit('No direct script access allowed');;
+
+
 $config = array(
     'name' => 'CMS',
     'debug' => true,

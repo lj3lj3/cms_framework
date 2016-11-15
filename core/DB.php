@@ -1,7 +1,7 @@
 <?php
 //namespace Core;
 //use Core\Model\BaseModel;
-require_once dirname(__FILE__) . "/Log/Log.php";
+//require_once dirname(__FILE__) . "/Log/Log.php";
 
 /**
  * Created by PhpStorm.
@@ -27,6 +27,8 @@ class DB
     protected $name;
     protected $password;
 
+    public $tablePrefix;
+
     /**
      * @var PDOStatement
      */
@@ -38,9 +40,10 @@ class DB
 
     protected $result;
 
-    public function __construct($dbConfigName)
+    public function __construct($dbConfigName = 'mysql')
     {
         if (array_key_exists($dbConfigName, $GLOBALS['config']['database'])) {
+            $this->tablePrefix = $GLOBALS['config']['database']['tablePrefix'];
             $dbConfigs = $GLOBALS['config']['database'][$dbConfigName];
             // 这里的charset只在php5.3之后生效，之前的版本需要使用exec命令手动设置
             $this->dsn = "{$dbConfigs['db']}:host={$dbConfigs['host']};charset={$dbConfigs['charset']};
@@ -49,9 +52,16 @@ class DB
             $this->name = $dbConfigs['name'];
             $this->password = $dbConfigs['password'];
 //            $this->pdo = new PDO(, $dbConfigs['name'], $dbConfigs['password']);
+            $this->pdo = new PDO($this->dsn, $this->name, $this->password);
+            $this->setParameters();
         } else {
             echo "not fonund this db config: $dbConfigName";
         }
+    }
+
+    public static function getTablePrefix()
+    {
+        return $GLOBALS['config']['database']['tablePrefix'];
     }
 
     public function getPOD()
@@ -85,14 +95,11 @@ class DB
         if ($GLOBALS['config']['debug'] == true) {
             $timeBefore = microtime(true);
         }
-        $this->pdo = new PDO($this->dsn, $this->name, $this->password);
-        $this->setParameters();
-
         try {
             // If sql is empty, use query string
             if ($sql == null) {
                 $sql = $this->queryStr;
-            } else if($this->queryStr == null){
+            } else if ($this->queryStr == null) {
                 // If sql is not null, but queryStr is null, set it back
                 $this->queryStr = $sql;
             }
@@ -110,10 +117,11 @@ class DB
             }
         }
 
-        if ($keyAndValues != null) {
+        if ($keyAndValues != null && $keyAndValues != '') {
             $this->pdoKeysAndValues = $keyAndValues;
         }
-        if ($whereKeyAndValues != null) {
+
+        if ($whereKeyAndValues != null && $whereKeyAndValues != '') {
             $this->pdoWhereKeysAndValues = $whereKeyAndValues;
         }
 
@@ -129,19 +137,19 @@ class DB
 
     private function doBindValue()
     {
-        if ($this->pdoKeysAndValues != null) {
+        if ($this->pdoKeysAndValues != null && $this->pdoKeysAndValues != '') {
             // bind everything
             foreach ($this->pdoKeysAndValues as $key => $value) {
                 $keyOK = $this->replaceDots($key);
-                $this->pdoStatement->bindValue(':'.$keyOK, $value);
+                $this->pdoStatement->bindValue(':' . $keyOK, $value);
             }
         }
 
-        if ($this->pdoWhereKeysAndValues != null) {
+        if ($this->pdoWhereKeysAndValues != null && $this->pdoWhereKeysAndValues != '') {
             // bind everything
             foreach ($this->pdoWhereKeysAndValues as $key => $value) {
                 $keyOK = $this->replaceDots($key);
-                $this->pdoStatement->bindValue(':'.$keyOK, $value);
+                $this->pdoStatement->bindValue(':' . $keyOK, $value);
             }
         }
 
@@ -173,8 +181,8 @@ class DB
         }
         $this->doBindValue();
         $this->result = $this->pdoStatement->execute();
-        if(!$this->result){
-            throw new Exception('PDO执行出错：'. $this->queryStr);
+        if (!$this->result) {
+            throw new Exception('PDO执行出错：' . $this->queryStr);
         }
 
         if ($GLOBALS['config']['debug'] == true) {
@@ -214,13 +222,18 @@ class DB
     }
 
 
-    public function queryAll(BaseModel $model)
+    public function queryAll($tableName)
     {
-        $this->prepare("select * from {$model->getTableName()}")->execute();
+        $this->prepare("SELECT * FROM " . $this->tablePrefix . $tableName)->execute();
         return $this->fetchAll();
     }
 
-    public function insert(BaseModel $model, $keyAndValues)
+    /**
+     * @param $tableName
+     * @param $keyAndValues
+     * @return string 插入记录的id
+     */
+    public function insert($tableName, $keyAndValues)
     {
         $columns = array_keys($keyAndValues);
         $columnsString = implode(',', $columns);
@@ -239,11 +252,11 @@ class DB
 //            $this->pdoKeysAndValues[$columns[$i]] = $values[$i];
 //        }
 
-        return $this->prepare("insert into {$model->getTableName()} ({$columnsString}) values 
+        return $this->prepare("insert into " . $this->tablePrefix . $tableName . "({$columnsString}) values 
         ({$placeHolderString})")->execute()->lastInsertId();
     }
 
-    public function update(BaseModel $model, $keyAndValues, $whereKeyAndValues)
+    public function update($tableName, $keyAndValues, $whereKeyAndValues)
     {
 //        $columns = array_keys($keyAndValues);
 //        $columnsString = implode(',', $columns);
@@ -254,25 +267,25 @@ class DB
         $setStr = '';
         $index = 0;
         foreach (array_keys($keyAndValues) as $key) {
-            if($index != 0){
+            if ($index != 0) {
                 $setStr = $setStr . ', ';
             }
             $keyOK = $this->replaceDots($key);
             $setStr = $setStr . "{$key}=:{$keyOK}";
 
-            $index ++;
+            $index++;
         }
 
         $whereStr = '';
         $index = 0;
         foreach (array_keys($whereKeyAndValues) as $key) {
-            if($index != 0){
+            if ($index != 0) {
                 $whereStr = $whereStr . ', ';
             }
             $keyOK = $this->replaceDots($key);
             $whereStr = $whereStr . "{$key}=:{$keyOK}";
 
-            $index ++;
+            $index++;
         }
         // ues refer
         // use foreach for better performance
@@ -288,7 +301,9 @@ class DB
 //        }
 
         // UPDATE table set xxxx
-        return $this->prepare("update {$model->getTableName()} set {$setStr} where ({$whereStr})")->execute()->rowCount();
+        return $this->prepare("update " . $this->tablePrefix . $tableName . " set {$setStr} where ({$whereStr})")
+            ->execute()
+            ->rowCount();
     }
 
     /**
@@ -298,30 +313,44 @@ class DB
      *          Only support AND condition
      * @return array
      */
-    public function query($model, $whereKeyAndValues)
+    public function query($tableName, $whereKeyAndValues = '', $orderBy = '', $limit = '')
     {
         // set value
         $this->pdoWhereKeysAndValues = $whereKeyAndValues;
 
         $whereStr = '';
         $index = 0;
-        foreach (array_keys($whereKeyAndValues) as $key) {
-            if($index != 0){
-                $whereStr = $whereStr . ' AND ';
-            }
-            $keyOK = $this->replaceDots($key);
-            $whereStr = $whereStr . "{$key}=:{$keyOK}";
+        if ($whereKeyAndValues != '') {
+            foreach (array_keys($whereKeyAndValues) as $key) {
+                if ($index != 0) {
+                    $whereStr = $whereStr . ' AND ';
+                }
+                $keyOK = $this->replaceDots($key);
+                $whereStr = $whereStr . "{$key}=:{$keyOK}";
 
-            $index ++;
+                $index++;
+            }
         }
 
-        $this->prepare("select * from {$model->getTableName()} where ({$whereStr})")->execute();
+        $sql = "SELECT * FROM " . $this->tablePrefix . $tableName;
+        if ($whereStr != '') {
+            $sql .= "where ({$whereStr})";
+        }
+
+        $this->prepare("$sql ORDER BY $orderBy LIMIT $limit")
+            ->execute();
 
         return $this->pdoStatement->fetchAll();
     }
 
     // TODO: make this one to soft delete
-    public function delete(BaseModel $model, $whereKeyAndValues)
+    /**
+     * @param $tableName
+     * @param $whereKeyAndValues
+     *          Values could be a array, will build sql string use IN word
+     * @return int
+     */
+    public function delete($tableName, $whereKeyAndValues)
     {
         // set value
         $this->pdoWhereKeysAndValues = $whereKeyAndValues;
@@ -329,133 +358,48 @@ class DB
         $whereStr = '';
         $index = 0;
         foreach (array_keys($whereKeyAndValues) as $key) {
-            if($index != 0){
+            if ($index != 0) {
                 $whereStr = $whereStr . ' AND ';
             }
             $keyOK = $this->replaceDots($key);
-            $whereStr = $whereStr . "{$key}=:{$keyOK}";
 
-            $index ++;
+            // If value is array, use IN
+            if(is_array($whereKeyAndValues[$key])){
+                $whereStr = $whereStr . "{$key} IN (:{$keyOK})";
+                $this->pdoWhereKeysAndValues[$key] = implode(',', $whereKeyAndValues[$key]);
+            } else {
+                $whereStr = $whereStr . "{$key}=:{$keyOK}";
+            }
+
+            $index++;
         }
 
-        return $this->prepare("delete from {$model->getTableName()} where ({$whereStr})")->execute()->rowCount();
+        return $this->prepare("delete from " . $this->tablePrefix . $tableName . " where ({$whereStr})")->execute()
+            ->rowCount();
 //
 //         $this->pdoStatement->fetchAll();
     }
 
     /**
-     * TODO: 通过的builder构建
-     * 现在暂时只考虑具有外链关联的两张表的自动关联
-     * @param $selectedColumns array 可为数组或者单一字符串
-     * @param $model BaseModel
+     * 查询表的总记录数
+     * @param $tableName
+     * @return array
      */
-    public function queryBuilder($selectedColumns, $model)
+    public function count($tableName)
     {
-        $selectedColStr = '';
-        if (!is_array($selectedColumns)) {
-            $selectedColStr = $selectedColumns;
-        // 如果数组中只有一个元素，不进行implode
-        }else if (count($selectedColumns) != 1) {
-            $selectedColStr = implode(', ', $selectedColumns);
-        } else {
-            $selectedColStr = $selectedColumns[0];
-        }
-
-//        $tableStrArray = array();
-//        foreach ($models as $key => $model){
-//            $tableStrArray[$key] = $model->getTableName();
-//        }
-//        $tableStr = implode(', ', $tableStrArray);
-
-        $this->queryStr = "select {$selectedColStr} from {$model->getTableName()}";
-        return $this;
+        $this->prepare("SELECT count(*) FROM " . $this->tablePrefix . $tableName)
+            ->execute();
+        return $this->pdoStatement->fetchAll();
     }
 
     /**
-     * queryBuilder
-     * @param $model BaseModel
+     * 直接执行sql语句
+     * @param $sql
+     * @return array
      */
-    public function join($model)
+    public function sql($sql)
     {
-        $this->queryStr .= " left join {$model->getTableName()}";
-        return $this;
-    }
-
-    /**
-     * queryBuilder
-     * @param $model BaseModel
-     */
-    public function rightJoin($model)
-    {
-        $this->queryStr .= " right join {$model->getTableName()}";
-        return $this;
-    }
-
-    /**
-     * @param $modelLeft BaseModel
-     * @param $columnLeft
-     * @param $modelRight BaseModel
-     * @param $columnRight
-     * @return $this
-     */
-    public function on($modelLeft, $columnLeft, $modelRight, $columnRight)
-    {
-//        $onStr = '';
-        /*for ($i = 0; $i < count($models); $i++) {
-            $onStr = "{$models[$i]->getTableName()}.{$columns[$i]}";
-            if ($i%2 == 0) {
-                $onStr .= '=';
-            }
-        }*/
-
-        $this->queryStr .= " on {$modelLeft->getTableName()}.$columnLeft={$modelRight->getTableName()}.$columnRight";
-        return $this;
-    }
-
-    /**
-     * queryBuilder
-     * @param $whereKeyAndValues
-     * @param array $operations
-     * @return $this
-     */
-    public function where($whereKeyAndValues, $operations = array('='))
-    {
-        // set value
-        $this->pdoWhereKeysAndValues = $whereKeyAndValues;
-
-        $whereStrArray = array();
-        /*$index = 0;
-        foreach (array_keys($whereKeyAndValues) as $key) {
-            if($index != 0){
-                $whereStr = $whereStr . ', ';
-            }
-            $whereStr = $whereStr . "{$key}=:{$key}";
-
-            $index ++;
-        }*/
-        $keys = array_keys($whereKeyAndValues);
-
-        $isDefaultOperation = false;
-//        $operation = '';
-        if (count($operations) == 1 && $operations[0] == '=') {
-            $isDefaultOperation = true;
-        }
-        for ($i = 0; $i < count($whereKeyAndValues); $i++) {
-            if ($isDefaultOperation) {
-                $operation = '=';
-            } else {
-                $operation = $operations[$i];
-            }
-            // 替换占位符中的.为_
-            $keyOK = $this->replaceDots($keys[$i]);
-            $whereStrArray[$i] = "{$keys[$i]}{$operation}:{$keyOK}";
-        }
-
-        $whereStr = implode(', ', $whereStrArray);
-
-        $this->queryStr .= " where {$whereStr}";
-
-        return $this;
+        return $this->prepare($sql)->execute()->fetchAll();
     }
 
     private function replaceDots($key)
@@ -463,32 +407,4 @@ class DB
         return str_replace('.', '_', $key);
     }
 
-    /**
-     * queryBuilder
-     * @param $orderColumns array
-     * @param $descOrAsc array
-     * @return $this
-     */
-    public function orderBy($orderColumns, $descOrAsc)
-    {
-        $orderStrArray = array();
-        for ($i = 0; $i < count($orderColumns); $i++) {
-            $orderStrArray[$i] = "$orderColumns[$i] $descOrAsc[$i]";
-        }
-//        $orderStr = ' order by ' . implode(', ', $orderStrArray);
-        $this->queryStr .= ' order by ' . implode(', ', $orderStrArray);
-        return $this;
-    }
-
-    /**
-     * 第一个参数是count
-     * queryBuilder
-     * @param int $offset
-     * @param int $count
-     */
-    public function limit($offset, $count)
-    {
-        $this->queryStr .= " limit {$offset}, {$count}";
-        return $this;
-    }
 }

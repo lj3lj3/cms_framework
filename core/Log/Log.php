@@ -1,6 +1,6 @@
 <?php
-require_once 'FileLogHandler.php';
-require_once 'DBLogHandler.php';
+require 'FileLogHandler.php';
+require 'DBLogHandler.php';
 
 /**
  * 默认使用文件存储方式
@@ -28,11 +28,6 @@ class Log
     public function log($msg)
     {
         $this->logHandler->write($msg);
-    }
-
-    public function log_model($logModel)
-    {
-        $this->logHandler->writeModel($logModel);
     }
 
     public static function boot($logHandler = null)
@@ -81,8 +76,4 @@ class Log
         Log::$instance->log("emergency:[$tag]$msg");
     }
 
-    public static function logModel($logModel)
-    {
-        Log::$instance->log_model($logModel);
-    }
 }

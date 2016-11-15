@@ -1,5 +1,5 @@
 <?php
-require_once dirname(dirname(__FILE__)) . '/Model/LogModel.php';
+//require_once dirname(dirname(__FILE__)) . '/Model/LogModel.php';
 
 /**
  * Created by PhpStorm.
@@ -15,10 +15,4 @@ interface LogHandler
      * @return mixed
      */
     public function write($msg);
-
-    /**
-     * @param $log LogModel
-     * @return mixed
-     */
-    public function writeModel($log);
 }

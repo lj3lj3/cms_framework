@@ -16,6 +16,6 @@ return array(
         'dbname' => 'cms',
         'name' => 'root',
         'password' => 'root',
-        'tableprefix' => 't_',
     ),
+    'tablePrefix' => 't_',
 );

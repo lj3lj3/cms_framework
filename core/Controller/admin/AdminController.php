@@ -1,9 +1,9 @@
 <?php
 
-require_once dirname(dirname(dirname(__FILE__))) . "/Model/BaseModel.php";
-require_once dirname(dirname(dirname(__FILE__))) . "/Model/Permission/User.php";
-require_once dirname(dirname(__FILE__)) . '/BaseController.php';
-require_once dirname(dirname(dirname(__FILE__))) . "/Session.php";
+//require_once dirname(dirname(dirname(__FILE__))) . "/Model/BaseModel.php";
+//require_once dirname(dirname(dirname(__FILE__))) . "/Model/Permission/User.php";
+//require_once dirname(dirname(__FILE__)) . '/BaseController.php';
+//require_once dirname(dirname(dirname(__FILE__))) . "/Session.php";
 /**
  * Created by PhpStorm.
  * User: Daylemon
@@ -18,24 +18,25 @@ class AdminController extends BaseController
 {
     const TAG = "AdminController";
 
-    const USER_NAME = "adminname";
-    const PASSWORD = "password";
-
-
     public function index()
     {
-        $this->smarty->display($this->tplDir . 'admin/index.tpl');
+        if (!isset($_SESSION["username"])) {
+            $this->login();
+            return;
+        }
+
+        $this->smarty->display(tpl_dir . 'admin/index.tpl');
     }
 
     public function login()
     {
         // If user already login, return to index
-        if (Session::isUserLogin()) {
+        if (isset($_SESSION["username"])) {
             header("Location: /admin");
             return;
         }
 
-        $this->smarty->display($this->tplDir . 'admin/login/index.tpl');
+        $this->smarty->display(tpl_dir . 'admin/login/index.tpl');
     }
 
     /**
@@ -43,21 +44,20 @@ class AdminController extends BaseController
      */
     public function doLogin()
     {
-        /**
-         * @var $request Request
-         */
-        $request = $GLOBALS['request'];
-        $post = $request->POST();
+//        urlencode($_POST['adminname']);
+//        urlencode($_POST['password']);
+        $username = urlencode($_POST['adminname']);
+        $password = urlencode($_POST['password']);
 
-        $user = new User();
-        $username = $post[AdminController::USER_NAME];
-        $user->name = urlencode($username);
-        $password = $post[AdminController::PASSWORD];
-        $user->password = urlencode($password);
+        $db = new DB();
+        $result = $db->query('user', array(
+            'name' => $username,
+            'password' => $password,
+        ));
 
-        if($user->exist()){
+        if(count($result) != 0){
             $message = "{'title': '登录成功！','content': ''}";
-            Session::userLogin($username);
+            $_SESSION['username'] = $username;
             //TODO: 改进方案 1.返回给客户端一个页面 2.AJAX请求这个函数，都在客户端做跳转
             header("Location: /admin");
             //TODO: If remember password checkbox is checked, write user info into the cookies
@@ -72,8 +72,8 @@ class AdminController extends BaseController
 
     public function logout()
     {
-        Log::info(AdminController::TAG, $_SESSION[User::C_NAME] . " is logout");
-        Session::userLogout();
+        Log::info(AdminController::TAG, $_SESSION['username'] . " is logout");
+        unset($_SESSION['username']);
         header("Location: /admin");
     }
 }

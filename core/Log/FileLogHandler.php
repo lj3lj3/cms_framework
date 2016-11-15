@@ -39,13 +39,4 @@ class FileLogHandler implements LogHandler
 
         fclose($this->handler);
     }
-
-    /**
-     * @param $log LogModel
-     * @return mixed
-     */
-    public function writeModel($log)
-    {
-        // TODO: Implement writeModel() method.
-    }
 }

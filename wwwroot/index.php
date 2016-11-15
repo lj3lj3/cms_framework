@@ -9,10 +9,10 @@
 //use Core\Router;
 //use Core\Middleware\Pipeline;
 
-require_once dirname(__FILE__) . '/../core/Request.php';
-require_once dirname(__FILE__) . '/../core/Router.php';
-require_once dirname(__FILE__) . '/../core/boot.php';
-require_once dirname(dirname(__FILE__)) . '/core/Middleware/Pipeline.php';
+//require_once dirname(__FILE__) . '/../core/Request.php';
+//require_once dirname(__FILE__) . '/../core/Router.php';
+//require_once dirname(__FILE__) . '/../core/boot.php';
+//require_once dirname(dirname(__FILE__)) . '/core/Middleware/Pipeline.php';
 
 //require_once dirname(__FILE__) . '/../routes/web.php';
 
@@ -24,7 +24,7 @@ $method = Request::method();
 
 $post = Request::POST();*/
 
-$request = new Request();
+//$request = new Request();
 
 // middleware
 //public function middleware(Pipeline $pipeline){
@@ -33,20 +33,28 @@ $request = new Request();
 
 // Closure only works on php 5.3 and above
 //$result = $pipeline->send($request)->through($GLOBALS['config']['middleware'])->go(function ($request) use ($routeFile) {
-$router = new Router();
+//$router = new Router();
 //
 //    require $routeFile;
 //
 //$router->direct($request->uri());
 //});
+define('IN_CMS', true);
+
+require dirname(dirname(__FILE__)) . '/config/global.php';
+
 // 添加debug执行时间调试
 $tStart = 0;
 if ($GLOBALS['config']['debug'] == true) {
     $tStart = microtime(true);
 }
 // For php 5.2
-$pipeline = new Pipeline();
-$result = $pipeline->send($request)->through($GLOBALS['config']['middleware'])->go(new Router());
+//$pipeline = new Pipeline();
+//$result = $pipeline->send($request)->through($GLOBALS['config']['middleware'])->go(new Router());
+require dirname(__FILE__) . '/../core/boot.php';
+
+// 转发到路由
+redirect();
 
 if ($GLOBALS['config']['debug'] == true) {
     $timeUsed =  microtime(true) - $tStart;

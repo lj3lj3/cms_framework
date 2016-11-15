@@ -1,0 +1,19 @@
+<div class="divTitle">
+    <span>
+        <img id="divTitleImg" src="{$data['divTitle']['img']}">
+        <a href="{$data['divTitle']['left_link']}">{$data['divTitle']['left_title']}</a>
+        <label>
+            {php $index=0}
+            {foreach $data['divTitle']['right'] $innerTitle $link}
+                {php $index = $index + 1}
+                <a href="{$link}" target="_blank" title="{$innerTitle}" class="CurrChnlCls">{$innerTitle}</a>
+                {if $index < count($data['divTitle']['right'])}
+                    &nbsp;&gt;&nbsp;
+                {/if}
+            {/foreach}
+            <!--{*<a href="../../" target="_blank" title="首页" class="CurrChnlCls">首页</a>
+            &nbsp;&gt;&nbsp;
+            <a href="../" target="_blank" title="书香榆林" class="CurrChnlCls">书香榆林</a>*}-->
+        </label>
+    </span>
+</div>
