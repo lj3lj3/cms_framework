@@ -1,3 +1,4 @@
+<?php defined('IN_CMS') or exit('No direct script access allowed'); ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -102,7 +103,7 @@
         <input name="sourceurl" type="hidden" id="sourceurl"
                value="/other/news/list_audit.php">
         <!-- add input id -->
-        <input type="hidden" name="id" id="id" value="{$article['id']}">
+        <input type="hidden" name="id" id="id" value="<?php echo $article['id'];?>">
         <input type="hidden" name="catid" id="catid" value="9">
         <input type="hidden" name="style_color" id="style_color" value="">
         <input type="hidden" name="style_font_weight" id="style_font_weight" value="">
@@ -119,7 +120,7 @@
                 </div>
             </li>
             <li><label>内容标题<b>*</b></label><input name="title" type="text" class="dfinput" id="title"
-                                                  style="width:450px;" value="{$article['title']}"
+                                                  style="width:450px;" value="<?php echo $article['title'];?>"
                                                   onkeyup="checkLen(this, 'title_len', 40);" maxlength="40">
                 <i style="position:relative;"><img src="/images/article/colour.png" width="10" height="10"
                                                    onclick="colorpicker('title_colorpanel','set_title_color');"
@@ -130,23 +131,23 @@
                          style="cursor:hand"></i>
                 <i>还可输入<b><span style="display:inline;" id="title_len">40</span></b> 个字符</i></li>
             <li><label>拟　　稿<b>*</b></label><input name="author" type="text" class="dfinput" id="author"
-                                                  style="width:150px;" value="{$article['author']}"><i></i></li>
+                                                  style="width:150px;" value="<?php echo $article['author'];?>"><i></i></li>
             <li><label>审　　核<b>*</b></label><input name="verifier" type="text" class="dfinput" id="verifier"
-                                                  value="{$article['verifier']}" style="width:150px;"><i></i></li>
+                                                  value="<?php echo $article['verifier'];?>" style="width:150px;"><i></i></li>
             <li><label>签　　发<b>*</b></label><input name="qianfa" type="text" class="dfinput" id="qianfa"
-                                                  value="{$article['qianfa']}" style="width:150px;"><i></i></li>
+                                                  value="<?php echo $article['qianfa'];?>" style="width:150px;"><i></i></li>
             <li><label>内容来源<b>*</b></label><input name="copyfrom" type="text" class="dfinput" id="copyfrom"
-                                                  style="width:200px;" value="{$article['copyfrom']}"><i></i></li>
+                                                  style="width:200px;" value="<?php echo $article['copyfrom'];?>"><i></i></li>
             <li><label>标题图片<b> </b></label><input name="thumb" type="text" class="dfinput" id="thumb"
-                                                  value="{$article['thumb']}"
+                                                  value="<?php echo $article['thumb'];?>"
                                                   style="width:220px;float:left;"><i><a class="sc"
                                                                                         onclick="javascript:ShowIframe('图片LOGO上传','../upload.php?pic=thumb','340','80')">上传</a></i>
             </li>
             <li><label>内容摘要<b> </b></label><textarea name="description" cols="" rows="" class="textinput"
-                                                     id="description" style="height:60px;">{$article['description']}</textarea></li>
+                                                     id="description" style="height:60px;"><?php echo $article['description'];?></textarea></li>
             <li><label>内　　容<b> </b></label>
                 <div class="ueditors">
-                <script id="content" name="content" type="text/plain">{$article['content']}</script>
+                <script id="content" name="content" type="text/plain"><?php echo $article['content'];?></script>
                 <!-- 实例化编辑器 -->
                 <script type="text/javascript">
                     var ue = UE.getEditor('content');
@@ -160,9 +161,9 @@
                         value="1">张图片作为标题图片
             </li>
             <li><label>链接地址<b> </b></label><input name="url" type="text" class="dfinput" id="url" style="width:350px;"
-                                                  value="{$article['url']}">
-                <i><input name="islink" type="checkbox" id="islink" value="1" {if $article['islink']} checked="checked"
-                    {/if}">
+                                                  value="<?php echo $article['url'];?>">
+                <i><input name="islink" type="checkbox" id="islink" value="1" <?php if($article['islink']) { ?> checked="checked"
+                    <?php } ?>">
                     <font color="red">转向链接</font></i></li>
             <li><label>推 荐 位<b> </b></label><cite>
                     <input name="posids[]" type="checkbox" id="posids" value="2">
@@ -171,10 +172,10 @@
                     首页幻灯 &nbsp;&nbsp;
                 </cite>
             </li>
-            <li><label>是否发布</label><cite><input name="status" type="radio" value="99" {if $article['status'] == 99}
-                                                checked="checked" {/if}>是&nbsp;&nbsp;&nbsp;&nbsp;<input
-                            name="status" type="radio" value="0" {if $article['status'] != 99} checked="checked"
-                {/if}>否</cite></li>
+            <li><label>是否发布</label><cite><input name="status" type="radio" value="99" <?php if($article['status'] == 99) { ?>
+                                                checked="checked" <?php } ?>>是&nbsp;&nbsp;&nbsp;&nbsp;<input
+                            name="status" type="radio" value="0" <?php if($article['status'] != 99) { ?> checked="checked"
+                <?php } ?>>否</cite></li>
             <li><label>&nbsp;</label><input name="dosubmit" onclick="input_ok(document.myform)" type="button"
                                             class="btn" value="确认保存">&nbsp;&nbsp;&nbsp;&nbsp;<input name="back"
                                                                                                     onclick="javascript:history.back(-1)"

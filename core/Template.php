@@ -25,6 +25,17 @@ class Template {
         }
     }
 
+    public function directDisplay($templateFile)
+    {
+        extract($this->data);
+        
+        if(file_exists($templateFile)) {
+            include $templateFile;
+        } else {
+            throw new Exception($templateFile . " does not exists");
+        }
+    }
+
     public function display($templateFile)
     {
         extract($this->data);

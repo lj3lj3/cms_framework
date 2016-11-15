@@ -43,12 +43,12 @@ class AdminArticleController extends BaseController
             'articles' => $articles
         ));
 
-        $this->tpl->display(tpl_dir . 'admin/article/index.html');
+        $this->tpl->directDisplay(tpl_dir . 'admin/article/index.html.php');
     }
 
     public function create()
     {
-        $this->tpl->display(tpl_dir . 'admin/article/create.html');
+        $this->tpl->directDisplay(tpl_dir . 'admin/article/create.html.php');
     }
 
     public function store()
@@ -99,7 +99,7 @@ class AdminArticleController extends BaseController
             throw new Exception("没有记录");
         }
         $this->tpl->assign('article', $articleArray[0]);
-        $this->tpl->display(tpl_dir . 'admin/article/edit.html');
+        $this->tpl->directDisplay(tpl_dir . 'admin/article/edit.html.php');
     }
 
     public function update()

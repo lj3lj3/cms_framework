@@ -1,3 +1,4 @@
+<?php defined('IN_CMS') or exit('No direct script access allowed'); ?>
 <html xmlns="http://www.w3.org/1999/xhtml"><head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <title>DFCMS-网站管理系统</title>
@@ -279,37 +280,37 @@
                     <tbody>
                     <!-- {echo "err";} -->
                     <!--{assign var="index" value=0} -->
-                    {foreach $articles $index $article}
+                    <?php $n=1; if(is_array($articles)) foreach($articles AS $index => $article) { ?>
                         <!--{$index = $index + 1}-->
                         <tr>
-                            <td><input type="checkbox" id="checkbox" value="{$article['id']}" name="checkbox[]"
+                            <td><input type="checkbox" id="checkbox" value="<?php echo $article['id'];?>" name="checkbox[]"
                                        onclick="chkclick
                             ();"></td>
-                            <td>{php echo $index+1}</td>
-                            <td><a href="/article/show?id={$article['id']}" target="_blank"><span
-                                            style="">{$article['title']}</span></a></td>
-                            <td>{$article['updatetime']}</td>
-                            <td>{$article['username']}</td>
-                            <td>{$article['catid']}</td>
-                            <td>{if $article['status'] == 99}
+                            <td><?php echo $index+1?></td>
+                            <td><a href="/article/show?id=<?php echo $article['id'];?>" target="_blank"><span
+                                            style=""><?php echo $article['title'];?></span></a></td>
+                            <td><?php echo $article['updatetime'];?></td>
+                            <td><?php echo $article['username'];?></td>
+                            <td><?php echo $article['catid'];?></td>
+                            <td><?php if($article['status'] == 99) { ?>
                                     已发布
-                                {else}
+                                <?php } else { ?>
                                     未发布
-                                {/if}
+                                <?php } ?>
                             </td>
-                            <td><a href="/admin/adminArticle/edit?id={$article['id']}" class="tablelink">修改</a>     <a
-                                        href="/admin/adminArticle/delete?id={$article['id']}" onclick="return confirm
-                                        ('确认要删除{$article['title']}吗？');"
+                            <td><a href="/admin/adminArticle/edit?id=<?php echo $article['id'];?>" class="tablelink">修改</a>     <a
+                                        href="/admin/adminArticle/delete?id=<?php echo $article['id'];?>" onclick="return confirm
+                                        ('确认要删除<?php echo $article['title'];?>吗？');"
                                         class="tablelink"> 删除</a></td>
                         </tr>
-                    {/foreach}
+                    <?php $n++;}?>
                     </tbody>
                 </table>
             </form>
 
 
             <div class="pagin">
-                {$pageHtml}
+                <?php echo $pageHtml;?>
             </div>
 
 
