@@ -36,9 +36,9 @@ class Pagex{
            $parse_url=parse_url($this->pageurl);
            @$url_query=$parse_url["query"]; 
              if($url_query){
-               // DayL mod
+               // DayL mod 缺定界符
 //             @$url_query=ereg_replace("(^|&){$this->pagename}={$this->currpage()}","",@$url_query);
-             @$url_query=preg_replace("(^|&){$this->pagename}={$this->currpage()}","",@$url_query);
+             @$url_query=preg_replace("/(^|&){$this->pagename}={$this->currpage()}/","",@$url_query);
              $this->pageurl=str_replace($parse_url["query"],$url_query,$this->pageurl);
                if($url_query) $this->pageurl.="&amp;".$this->pagename; else $this->pageurl.=$this->pagename;
              }else {

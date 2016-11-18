@@ -11,7 +11,6 @@ defined('IN_CMS') or exit('No direct script access allowed');
 
 require dirname(__FILE__) . '/Log/Log.php';
 require 'Exception.php';
-require dirname(dirname(__FILE__)) . '/vendor/smarty/libs/Smarty.class.php';
 require 'DB.php';
 require 'Util.php';
 require dirname(dirname(__FILE__)) . '/vendor/swcms/Page.class.php';
@@ -24,6 +23,7 @@ Log::boot(new FileLogHandler());
 // For now
 define('ERROR_REPORT', 3);
 define('tpl_dir', dirname(dirname(__FILE__)) . '/templates/');
+define('static_dir', dirname(dirname(__FILE__)) . '/wwwroot/static/');
 
 // Set error reporting
 if(ERROR_REPORT==1) {
@@ -125,7 +125,12 @@ function redirect()
     $controllerUri = 'Controller/' . $dirName . $realClassName. '.php';
     // Check the file exists or not
     if (!file_exists(dirname(__FILE__) . "/" . $controllerUri)) {
-        throw new Exception(dirname(__FILE__) . "/" . $controllerUri . " does not exists!");
+        // check the directory name of class
+        $controllerUri = 'Controller/' . $dirName . '/' . strtolower($className) . '/'. $realClassName. '.php';
+        // not exist
+        if (!file_exists(dirname(__FILE__) . "/" . $controllerUri)) {
+            throw new Exception(dirname(__FILE__) . "/" . $controllerUri . " does not exists!");
+        }
     }
 
     require 'Controller/BaseController.php';

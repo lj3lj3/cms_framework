@@ -144,7 +144,8 @@ class Template {
 		$template = preg_replace("/\{else\}/", "<?php } else { ?>", $template);
 		$template = preg_replace("/\{elseif\s+(.+?)\}/", "<?php } elseif (\\1) { ?>", $template);
 		$template = preg_replace("/\{\/if\}/", "<?php } ?>", $template);
-        $template = preg_replace_callback("/\{include\s+(.+?)\}/", "self::parseInclude", $template);
+        // Add Include
+        $template = preg_replace_callback("/\{include\s+\"(.+?)\"\}/", "self::parseInclude", $template);
 
 		$template = preg_replace("/\{\+\+(.+?)\}/", "<?php ++\\1; ?>", $template);
 		$template = preg_replace("/\{\-\-(.+?)\}/", "<?php ++\\1; ?>", $template);

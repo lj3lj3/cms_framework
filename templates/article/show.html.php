@@ -1,7 +1,8 @@
+<?php defined('IN_CMS') or exit('No direct script access allowed'); ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"><head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <title>{$data['article']['title']}</title>
+    <title><?php echo $data['article']['title'];?></title>
 
     <meta name="filetype" content="0">
     <meta name="publishedtype" content="1">
@@ -105,9 +106,36 @@
     <div class="conter artical">
         <!-- 文章列表 -->
         <div class="artleft artshow">
-            {include "common/divTitle.html"}
+            <?php defined('IN_CMS') or exit('No direct script access allowed'); ?>
+<div class="divTitle">
+    <span>
+        <img id="divTitleImg" src="<?php echo $data['divTitle']['img'];?>">
+        <a href="<?php echo $data['divTitle']['left_link'];?>"><?php echo $data['divTitle']['left_title'];?></a>
+        <label>
+            <?php $index=0?>
+            <?php $n=1; if(is_array($data['divTitle']['right'])) foreach($data['divTitle']['right'] AS $innerTitle => $link) { ?>
+                <?php $index = $index + 1?>
+                <a href="<?php echo $link;?>" target="_blank" title="<?php echo $innerTitle;?>" class="CurrChnlCls"><?php echo $innerTitle;?></a>
+                <?php if($index < count($data['divTitle']['right'])) { ?>
+                    &nbsp;&gt;&nbsp;
+                <?php } ?>
+            <?php $n++;}?>
+            <!--{*<a href="../../" target="_blank" title="首页" class="CurrChnlCls">首页</a>
+            &nbsp;&gt;&nbsp;
+            <a href="../" target="_blank" title="书香榆林" class="CurrChnlCls">书香榆林</a>*}-->
+        </label>
+    </span>
+</div>
             <div class="artbox">
-                {include "common/article.html"}
+                <?php defined('IN_CMS') or exit('No direct script access allowed'); ?>
+<div class="artbox">
+    <h3><?php echo $data['article']['title'];?></h3>
+    <div class="function_tex"><label>发布时间：<?php echo $data['article']['updatetime'];?></label><label>来源：<?php echo $data['article']['copyfrom'];?></label><label
+    >责任编辑：<?php echo $data['article']['author'];?></label></div>
+    <div id="content" class="content">
+        <?php echo $data['article']['content'];?>
+    </div>
+</div>
             </div>
         </div>
         <div class="clear"></div>

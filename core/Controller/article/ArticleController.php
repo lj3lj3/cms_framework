@@ -24,6 +24,14 @@ class ArticleController extends BaseController
         );
 
         $id = getRequestParam('id');
+
+        // 读取静态文件
+        $path = "article/$id.html";
+        if($this->isStatic($path)){
+            return;
+        }
+
+        // 静态文件不存在 读取数据库 进行显示并生成新的静态文件
         $db = new DB();
         $tArticleName = $db->tablePrefix . 'article';
         $tArticleDataName = $db->tablePrefix . 'article_data';
@@ -38,7 +46,7 @@ class ArticleController extends BaseController
 
         $data['article'] = $articleArray[0];
 
-        $this->tpl->assign("data", $data);
-        $this->tpl->display(tpl_dir . "article/show.html");
+        $this->assign("data", $data);
+        $this->display("article/show.html", $path);
     }
 }

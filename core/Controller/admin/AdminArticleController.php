@@ -1,6 +1,6 @@
 <?php
 
-defined('IN_CMS') or exit('No direct script access allowed');;
+defined('IN_CMS') or exit('No direct script access allowed');
 /**
  * Created by PhpStorm.
  * User: lj3lj
@@ -38,17 +38,17 @@ class AdminArticleController extends BaseController
 
 //        $tpl = new Template();
 
-        $this->tpl->assign(array(
+        $this->assign(array(
             'pageHtml' =>$pageHtml,
             'articles' => $articles
         ));
 
-        $this->tpl->directDisplay(tpl_dir . 'admin/article/index.html.php');
+        $this->directDisplay('admin/article/index.html.php');
     }
 
     public function create()
     {
-        $this->tpl->directDisplay(tpl_dir . 'admin/article/create.html.php');
+        $this->directDisplay('admin/article/create.html.php');
     }
 
     public function store()
@@ -98,8 +98,8 @@ class AdminArticleController extends BaseController
         if (count($articleArray) == 0) {
             throw new Exception("没有记录");
         }
-        $this->tpl->assign('article', $articleArray[0]);
-        $this->tpl->directDisplay(tpl_dir . 'admin/article/edit.html.php');
+        $this->assign('article', $articleArray[0]);
+        $this->directDisplay('admin/article/edit.html.php');
     }
 
     public function update()
